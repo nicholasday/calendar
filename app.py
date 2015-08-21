@@ -31,7 +31,7 @@ class _localized_month:
     def __len__(self):
         return 13
 
-cssclasses = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+cssclasses = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 month_name = _localized_month('%B')
 
 def make_html_calendar(calendar):
