@@ -281,7 +281,7 @@ def view_task(task_id):
         task = Task.query.filter_by(id=task_id, user=current_user).first()
         if task is None:
             return "No task with that name"
-        category = Category.query.filter_by(user=current_user).all()
+        categories = Category.query.filter_by(user=current_user).all()
         return render_template("task.html", task=task, categories=categories)
     elif request.method == 'POST':
         if task_id is None:
