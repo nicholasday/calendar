@@ -1,0 +1,17 @@
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+td {
+    width: 14%;
+    max-width: 14%;
+    padding: 5px;
+    border: 1px solid black;
+}
+.today {
+    border: 2px solid red;
+}
+/*td:hover {
+    text-overflow: inherit;
+    overflow: visible;
+}*/

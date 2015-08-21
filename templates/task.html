@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="static/css/styles.css">
+<a href="/">Home</a>
+<a href="/task/{{ task.id }}">{{ task.name }}</a>
+<p>{{ task.date }}</p>
+<p>{{ task.description }}</p>
+<p>{{ task.category.name }}</p>
+<a href="/task/{{ task.id }}/delte">delete</a>
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script>
+  $(function() {
+    $( "#datepicker" ).datepicker();
+  });
+  </script>
+<form action="/task/{{ task.id }}" method="post" id="update_task">
+  <input type="text" name="name" value="{{ task.name }}" />
+  <br />
+  <input type="text" name="description" value="{{ task.description }}" />
+  <br />
+  Category: 
+  <select name="category" form="update_task" autocomplete="off">
+  {% for category in categories %}
+    <option value="{{ category.name }}" {% if category.name ==
+  task.category.name %} selected="selected"  {% endif %}>{{ category.name }}</option>
+  {% endfor %}
+  </select>
+  <br />
+  <input type="text" id="datepicker" name="date" value="{{task.date.strftime('%m/%d/%Y') }}" />
+  <br>
+  <input type="submit" value="Update Task" />
+</form>
+  
