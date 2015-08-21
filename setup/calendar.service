@@ -1,0 +1,9 @@
+[Unit]
+Description=uWSGI instance to serve calendar
+
+[Service]
+ExecStartPre=-/bin/bash -c 'mkdir -p /run/uwsgi; chown nick:www-data /run/uwsgi'
+ExecStart=/bin/bash -c 'cd /home/nick/calendar; source calendarenv/bin/activate; uwsgi --ini calendar.ini'
+
+[Install]
+WantedBy=multi-user.target
