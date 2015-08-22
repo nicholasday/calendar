@@ -37,7 +37,7 @@ month_name = _localized_month('%B')
 def make_html_calendar(calendar):
     v = []
     a = v.append
-    a('<table border="0" cellpadding="0" cellspacing="0" class="month">')
+    a('<table class="month table">')
     a('\n')
     a(formatmonthname(datetime.datetime.now().month, datetime.datetime.now().month))
     a('\n')
@@ -177,7 +177,7 @@ def main():
                            day.append(task.name) 
 
     html_calendar = make_html_calendar(new_list_calendar)
-    return render_template('index.html', categories=categories, calendar=html_calendar, task=None)
+    return render_template('index.html', categories=categories, calendar=html_calendar, task=None, current_user=current_user)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -203,7 +203,7 @@ def register():
 
         login_user(user)
         return redirect(url_for('main'))
-    return render_template('login.html')
+    return render_template('login.html', current_user=current_user)
 
 @app.route("/logout")
 @login_required
@@ -221,10 +221,11 @@ def login():
             username=request.form['username'],
             password=sha1(request.form['password'].encode('utf-8')).hexdigest()).first()
         if user is None:
-            return "Woah there! You didn't type something in right"
+            flash("Woah there! You didn't type something in right")
+            return redirect(url_for('main'))
         login_user(user)
         return redirect(url_for('main'))
-    return render_template('login.html')
+    return render_template('login.html', current_user=current_user)
 
 @app.route("/category", methods=["POST"])
 @login_required
@@ -233,10 +234,12 @@ def create_category():
         category = request.form['category']
         color = request.form['color']
         if not (category and color):
-            return "You didn't put in all of the values"
+            flash("You didn't put in all of the values")
+            return redirect(url_for('main'))
         category_search = Category.query.filter_by(name=category, user=current_user).first()
         if category_search is not None:
-            return "You already created a category with that name"
+            flash("You already created a category with that name")
+            return redirect(url_for('main'))
         new_category = Category(category, color, current_user)
         db.session.add(new_category)
         db.session.commit()
@@ -251,10 +254,12 @@ def create_task():
         name = request.form['name']
         description = request.form['description']
         if not (category and date and name and description):
-            return "You didn't put in all of the values"
+            flash("You didn't put in all of the values")
+            return redirect(url_for('main'))
         category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
         if category is None:
-            return "No category with that name"
+            flash("No category with that name")
+            return redirect(url_for('main'))
         new_task = Task(name, category, description, date, current_user)
         db.session.add(new_task)
         db.session.commit()
@@ -264,10 +269,12 @@ def create_task():
 @login_required
 def delete_task(task_id):
     if task_id is None:
-        return "No task selected to be deleted"
+        flash("No task selected to be deleted")
+        return redirect(url_for('main'))
     task = Task.query.filter_by(id=task_id, user=current_user).first()
     if task is None:
-        return "No task with that name"
+        flash("No task with that name")
+        return redirect(url_for('main'))
     db.session.delete(task)
     db.session.commit()
     return redirect(url_for('main'))
@@ -277,18 +284,22 @@ def delete_task(task_id):
 def view_task(task_id):
     if request.method == 'GET':
         if task_id is None:
-            return "No task selected"
+            flash("No task selected")
+            return redirect(url_for('main'))
         task = Task.query.filter_by(id=task_id, user=current_user).first()
         if task is None:
-            return "No task with that name"
+            flash("No task with that name")
+            return redirect(url_for('main'))
         categories = Category.query.filter_by(user=current_user).all()
-        return render_template("task.html", task=task, categories=categories)
+        return render_template("task.html", task=task, categories=categories, current_user=current_user)
     elif request.method == 'POST':
         if task_id is None:
-            return "No task selected"
+            flash("No task selected")
+            return redirect(url_for('main'))
         task = Task.query.filter_by(id=task_id, user=current_user).first()
         if task is None:
-            return "No task with that name"
+            flash("No task with that name")
+            return redirect(url_for('main'))
         category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
         task.name = request.form['name']
         task.category = category
@@ -301,10 +312,12 @@ def view_task(task_id):
 @login_required
 def delete_category(category_id):
     if category_id is None:
-        return "No category selected to be deleted"
+        flash("No category selected to be deleted")
+        return redirect(url_for('main'))
     category = Category.query.filter_by(id=category_id, user=current_user).first()
     if category is None:
-        return "No category with that name"
+        flash("No category with that name")
+        return redirect(url_for('main'))
     db.session.delete(category)
     db.session.commit()
     return redirect(url_for('main'))
