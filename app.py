@@ -231,7 +231,7 @@ def login():
 @login_required
 def create_category():
     if request.method == 'POST':
-        category = request.form['category']
+        category = request.form['name']
         color = request.form['color']
         if not (category and color):
             flash("You didn't put in all of the values")

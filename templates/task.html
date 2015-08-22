@@ -1,6 +1,5 @@
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<link rel="stylesheet" href="static/css/styles.css">
-<a href="/">Home</a>
+{% extends "base.html" %}
+{% block content %}
 <a href="/task/{{ task.id }}">{{ task.name }}</a>
 <p>{{ task.date }}</p>
 <p>{{ task.description }}</p>
@@ -30,4 +29,4 @@
   <br>
   <input type="submit" value="Update Task" />
 </form>
-  
+{% endblock %}
