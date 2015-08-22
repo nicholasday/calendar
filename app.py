@@ -195,7 +195,13 @@ def register():
                 password=request.form['password'],
                 email=request.form['email'],
             )
+            default_category = Category(
+                name='default',
+                color='black',
+                user=user
+            )
             db.session.add(user)
+            db.session.add(default_category)
             db.session.commit()
 
             login_user(user)
