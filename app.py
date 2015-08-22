@@ -38,7 +38,7 @@ def formatday(day, weekday):
         return '<td class="noday">&nbsp;</td>' # day outside month
     else:
         if day[0] == datetime.datetime.now().day:
-            s = '<span class="someday today">' + str(day[0]) + "</span><ol>"
+            s = '<span class="someday">' + str(day[0]) + "</span><ol>"
         else:
             s = '<span class="someday">' + str(day[0]) + "</span><ol>"
 
