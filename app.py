@@ -56,7 +56,7 @@ def formatday(day, weekday):
     else:
         s = str(day[0]) + "<ol>"
         for i in range(1, len(day)):
-            s = s + '<li class="' + day[i][0] + '">' + str(day[i][1]) + "</li>"
+            s = s + '<li style="color:' + day[i][0] + '">' + str(day[i][1]) + "</li>"
 
         if day[0] == datetime.datetime.now().day:
             day_class = cssclasses[weekday] + ' today'

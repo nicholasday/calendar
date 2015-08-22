@@ -9,11 +9,8 @@ th {
     padding: 10px;
 }
 .my-table {
-    border: 1px solid black;
     width: 100%;
     max-width: 100%;
-    border-spacing: 0px;
-    border-collapse: collapse;
 }
 .today {
     border: 2px double red;
