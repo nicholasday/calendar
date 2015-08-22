@@ -1,17 +1,7 @@
 td {
     width: 14%;
     max-width: 14%;
-    padding: 3px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-th {
-    padding: 10px;
-}
-.my-table {
-    width: 100%;
-    max-width: 100%;
 }
 .today {
-    border: 2px double red;
+    color: red;
 }

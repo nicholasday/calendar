@@ -14,32 +14,15 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 app.secret_key = 'the power of habit'
 
-class _localized_month:
-    _months = [datetime.date(2001, i+1, 1).strftime for i in range(12)]
-    _months.insert(0, lambda x: "")
-
-    def __init__(self, format):
-        self.format = format
-
-    def __getitem__(self, i):
-        funcs = self._months[i]
-        if isinstance(i, slice):
-            return [f(self.format) for f in funcs]
-        else:
-            return funcs(self.format)
-
-    def __len__(self):
-        return 13
-
 cssclasses = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-month_name = _localized_month('%B')
+month_name = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 def make_html_calendar(calendar):
     v = []
     a = v.append
-    a('<table border="1" class="month my-table">')
+    a('<table class="month table table-bordered">')
     a('\n')
-    a(formatmonthname(datetime.datetime.now().month, datetime.datetime.now().month))
+    a(formatmonthname(themonth=datetime.datetime.now().month, theyear=datetime.datetime.now().year))
     a('\n')
     a(formatweekheader())
     a('\n')
@@ -54,7 +37,11 @@ def formatday(day, weekday):
     if day[0] == 0:
         return '<td class="noday">&nbsp;</td>' # day outside month
     else:
-        s = str(day[0]) + "<ol>"
+        if day[0] == datetime.datetime.now().day:
+            s = '<span class="someday today">' + str(day[0]) + "</span><ol>"
+        else:
+            s = '<span class="someday">' + str(day[0]) + "</span><ol>"
+
         for i in range(1, len(day)):
             s = s + '<li style="color:' + day[i][0] + '">' + str(day[i][1]) + "</li>"
 
@@ -81,7 +68,7 @@ def formatweekheader():
 
 def formatmonthname(theyear, themonth, withyear=True):
     if withyear:
-        s = '%s %s' % (month_name[themonth], theyear)
+        s = '%s %s' % (month_name[themonth - 1], theyear)
     else:
         s = '%s' % month_name[themonth]
     return '<tr><th colspan="7" class="month">%s</th></tr>' % s
