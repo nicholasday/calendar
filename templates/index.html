@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <script>
-  $(function() {
-    $( "#datepicker-input" ).datepicker();
-  });
-  </script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+$(function() {
+$( "#datepicker-input" ).datepicker();
+});
+</script>
 <form action="/task" method="post" id="new_task" class="pull-left">
   <div class="forum-group">
     <label for="name-input">Name</label>
@@ -25,8 +24,8 @@
     </select>
   </div>
   <div class="forum-group">
-    <label for="datepicker-input">Category</label>
-    <input type="text" id="datepicker-input" name="date" placeholder="Date" autocomplete="off" />
+    <label for="datepicker-input">Date</label>
+    <input id="datepicker-input" name="date" placeholder="Date" autocomplete="off" />
   </div>
   <button type="submit" class="btn btn-default">Add Task</button>
 </form>  
