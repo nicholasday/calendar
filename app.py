@@ -56,7 +56,7 @@ def formatday(day, weekday):
     else:
         s = str(day[0]) + "<ol>"
         for i in range(1, len(day)):
-            s = s + "<li>" + str(day[i]) + "</li>"
+            s = s + '<li class="' + day[i][0] + '">' + str(day[i][1]) + "</li>"
 
         if day[0] == datetime.datetime.now().day:
             day_class = 'today'
@@ -174,7 +174,7 @@ def main():
                 for week in new_list_calendar:
                     for day in week:
                         if day[0] == task.date.day:
-                           day.append(task.name) 
+                           day.append([task.category.color, task.name]) 
 
     html_calendar = make_html_calendar(new_list_calendar)
     return render_template('index.html', categories=categories, calendar=html_calendar, task=None, current_user=current_user)
