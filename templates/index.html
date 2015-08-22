@@ -9,7 +9,7 @@ $('.color-group').colorpicker();
 });
 </script>
 <div class="row">
-  <div class="col-xs-12 col-md-6">
+  <div class="col-xs-6 col-md-3">
     <form action="/task" method="post" id="new_task" class="">
     <div class="form-group">
         <label for="name-input">Name</label>
@@ -39,7 +39,7 @@ $('.color-group').colorpicker();
     </div>
     </form>  
   </div>
-  <div class="col-xs-12 col-md-6">
+  <div class="col-xs-6 col-md-3">
     <form action="/category" method="post" id="new_category">
     <div class="form-group">
         <label for="new-category-input">Category</label>
@@ -65,7 +65,7 @@ $('.color-group').colorpicker();
 </div>
 <div class="row">
 {% for category in categories %}
-  <div class="col-md-3">
+  <div class="col-xs-12 col-md-3">
   <h3><a href="/category/{{ category.id }}" style="color:{{category.color}}">{{category.name}}</a></h3>
   <ul>
   {% for task in category.tasks %}

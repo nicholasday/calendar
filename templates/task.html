@@ -1,10 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="/task/{{ task.id }}">{{ task.name }}</a>
-<p>{{ task.date }}</p>
-<p>{{ task.description }}</p>
-<p>{{ task.category.name }}</p>
-<a href="/task/{{ task.id }}/delete">delete</a>
 <script>
 $(function() {
 $("#datepicker-input").datepicker({
@@ -12,32 +7,37 @@ $("#datepicker-input").datepicker({
 });
 });
 </script>
-<form action="/task/{{ task.id }}" method="post" id="new_task">
-  <div class="form-group">
-    <label for="name-input">Name</label>
-    <input type="text" class="form-control" id="name-input" name="name" value="{{ task.name }}" />
-  </div>
-  <div class="form-group">
-    <label for="description-input">Description</label>
-    <textarea class="form-control" id="description-input" name="description" placeholder="Description" rows="3"></textarea>
-  </div>
-  <div class="form-group">
-    <label for="category-input">Category</label>
-    <select name="category" form="new_task" class="form-control">
-    {% for category in categories %}
-      <option value="{{ category.name }}">{{ category.name }}</option>
-    {% endfor %}
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="datepicker-input">Date</label>
-    <div class="input-group date">
-        <input type="text" name="date" class="form-control" id="datepicker-input" value="{{ task.date.strftime('%m/%d/%Y') }}" autocomplete="off">
-        <div class="input-group-addon"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></div>
+<div class="row">
+  <div class="col-md-4 col-xs-12">
+    <form action="/task/{{ task.id }}" method="post" id="new_task">
+    <div class="form-group">
+        <label for="name-input">Name</label>
+        <input type="text" class="form-control" id="name-input" name="name" value="{{ task.name }}" />
     </div>
+    <div class="form-group">
+        <label for="description-input">Description</label>
+        <textarea class="form-control" id="description-input" name="description" placeholder="Description" rows="3">{{task.description }}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="category-input">Category</label>
+        <select name="category" form="new_task" class="form-control">
+        {% for category in categories %}
+        <option value="{{ category.name }}">{{ category.name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="datepicker-input">Date</label>
+        <div class="input-group date">
+            <input type="text" name="date" class="form-control" id="datepicker-input" value="{{ task.date.strftime('%m/%d/%Y') }}" autocomplete="off">
+            <div class="input-group-addon"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default">Update Task</button>
+        <a class="btn btn-default" href="/task/{{ task.id }}/delete" role="button">Delete Task</a>
+    </div>
+    </form>  
   </div>
-  <div class="form-group">
-    <button type="submit" class="btn btn-default">Update Task</button>
-  </div>
-</form>  
+</div>
 {% endblock %}
