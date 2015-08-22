@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script>
 $(function() {
-    $("#datepicker-input").datepicker();
+$("#datepicker-input").datepicker({
+    format: 'mm/dd/yyyy'
 });
-$(function(){
-    $('.color-group').colorpicker();
+$('.color-group').colorpicker();
 });
 </script>
 <form action="/task" method="post" id="new_task" class="pull-left">
@@ -28,7 +27,10 @@ $(function(){
   </div>
   <div class="forum-group">
     <label for="datepicker-input">Date</label>
-    <input id="datepicker-input" name="date" placeholder="Date" autocomplete="off" />
+    <div class="input-group date">
+        <input type="text" class="form-control" id="datepicker-input" value="{{ date }}" autocomplete="off">
+        <div class="input-group-addon"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></div>
+    </div>
   </div>
   <button type="submit" class="btn btn-default">Add Task</button>
 </form>  

@@ -177,7 +177,8 @@ def main():
                            day.append([task.category.color, task.name]) 
 
     html_calendar = make_html_calendar(new_list_calendar)
-    return render_template('index.html', categories=categories, calendar=html_calendar, task=None, current_user=current_user)
+    date = datetime.datetime.utcnow().strftime('%m/%d/%Y')
+    return render_template('index.html', date=date, categories=categories, calendar=html_calendar, task=None, current_user=current_user)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
