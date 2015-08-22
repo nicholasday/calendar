@@ -8,50 +8,56 @@ $("#datepicker-input").datepicker({
 $('.color-group').colorpicker();
 });
 </script>
-<form action="/task" method="post" id="new_task" class="pull-left">
-  <div class="form-group">
-    <label for="name-input">Name</label>
-    <input type="text" class="form-control" id="name-input" name="name" placeholder="Name" />
-  </div>
-  <div class="form-group">
-    <label for="description-input">Description</label>
-    <textarea class="form-control" id="description-input" name="description" placeholder="Description" rows="3"></textarea>
-  </div>
-  <div class="form-group">
-    <label for="category-input">Category</label>
-    <select name="category" form="new_task" class="form-control">
-    {% for category in categories %}
-      <option value="{{ category.name }}">{{ category.name }}</option>
-    {% endfor %}
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="datepicker-input">Date</label>
-    <div class="input-group date">
-        <input type="text" name="date" class="form-control" id="datepicker-input" value="{{ date }}" autocomplete="off">
-        <div class="input-group-addon"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></div>
+<div class="row">
+  <div class="col-xs-6">
+    <form action="/task" method="post" id="new_task" class="">
+    <div class="form-group">
+        <label for="name-input">Name</label>
+        <input type="text" class="form-control" id="name-input" name="name" placeholder="Name" />
     </div>
-  </div>
-  <div class="form-group">
-    <button type="submit" class="btn btn-default">Add Task</button>
-  </div>
-</form>  
-<form action="/category" method="post" id="new_category" class="pull-right">
-  <div class="form-group">
-    <label for="new-category-input">Category</label>
-    <input type="text" class="form-control" id="new-category-input" name="name" placeholder="Name" />
-  </div>
-  <div class="form-group">
-    <label for="color-input">Color</label>
-    <div class="input-group color-group">
-        <input type="text" class="form-control" id="color-input" name="color" value="00AABB" />
-        <span class="input-group-addon"><i></i></span>
+    <div class="form-group">
+        <label for="description-input">Description</label>
+        <textarea class="form-control" id="description-input" name="description" placeholder="Description" rows="3"></textarea>
     </div>
+    <div class="form-group">
+        <label for="category-input">Category</label>
+        <select name="category" form="new_task" class="form-control">
+        {% for category in categories %}
+        <option value="{{ category.name }}">{{ category.name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="datepicker-input">Date</label>
+        <div class="input-group date">
+            <input type="text" name="date" class="form-control" id="datepicker-input" value="{{ date }}" autocomplete="off">
+            <div class="input-group-addon"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default">Add Task</button>
+    </div>
+    </form>  
   </div>
-  <div class="form-group">
-    <button type="submit" class="btn btn-default">Add Category</button>
+  <div class="col-xs-6">
+    <form action="/category" method="post" id="new_category">
+    <div class="form-group">
+        <label for="new-category-input">Category</label>
+        <input type="text" class="form-control" id="new-category-input" name="name" placeholder="Name" />
+    </div>
+    <div class="form-group">
+        <label for="color-input">Color</label>
+        <div class="input-group color-group">
+            <input type="text" class="form-control" id="color-input" name="color" value="00AABB" />
+            <span class="input-group-addon"><i></i></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default">Add Category</button>
+    </div>
+    </form>
   </div>
-</form>
+</div>
  {{ calendar|safe }}
 <ul>
 {% for category in categories %}
