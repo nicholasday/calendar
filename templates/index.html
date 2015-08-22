@@ -77,7 +77,7 @@ $('.color-group').colorpicker();
 <div class="row">
   <div class="col-xs-12">
     <table class="table table-bordered desktop">
-      <tr><th class="month" colspan="7"><h3>{{ date.strftime("%B") }} {{ date.strftime("%Y") }}</h3></th></tr>
+      <tr><th class="month" colspan="7"><h3>{{ date.strftime("%B") }} {{ date.year }}</h3></th></tr>
       <tr><th class="Sunday">Sunday</th><th class="Monday">Monday</th><th class="Tuesday">Tuesday</th><th class="Wednesday">Wednesday</th><th class="Thursday">Thursday</th><th class="Friday">Friday</th><th class="Saturday">Saturday</th></tr>
     {% for week in calendar %}
     <tr>
