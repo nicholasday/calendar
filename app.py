@@ -314,6 +314,31 @@ def view_task(task_id):
         db.session.commit()
         return redirect(url_for('main'))
 
+@app.route("/category/<category_id>", methods=['GET', 'POST'])
+@login_required
+def view_category(category_id):
+    if request.method == 'GET':
+        if category_id is None:
+            flash("No category selected")
+            return redirect(url_for('main'))
+        category = Category.query.filter_by(id=category_id, user=current_user).first()
+        if category is None:
+            flash("No category with that name")
+            return redirect(url_for('main'))
+        return render_template("category.html", category=category, current_user=current_user)
+    elif request.method == 'POST':
+        if category_id is None:
+            flash("No category selected")
+            return redirect(url_for('main'))
+        category = Category.query.filter_by(id=category_id, user=current_user).first()
+        if category is None:
+            flash("No category with that name")
+            return redirect(url_for('main'))
+        category.name = request.form['name']
+        category.color = request.form['color']
+        db.session.commit()
+        return redirect(url_for('main'))
+
 @app.route("/category/<category_id>/delete")
 @login_required
 def delete_category(category_id):
