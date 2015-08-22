@@ -8,6 +8,9 @@ td {
 .mobile {
     display: none;
 }
+.month {
+    text-align: center;
+}
 @media (max-width: 767px) {
     .desktop {
         display: none;

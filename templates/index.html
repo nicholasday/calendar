@@ -30,7 +30,7 @@ $('.color-group').colorpicker();
     <div class="form-group">
         <label for="datepicker-input">Date</label>
         <div class="input-group date">
-            <input type="text" name="date" class="form-control" id="datepicker-input" value="{{ date }}" autocomplete="off">
+            <input type="text" name="date" class="form-control" id="datepicker-input" value="{{ date.strftime("%m/%d/%Y") }}" autocomplete="off">
             <div class="input-group-addon"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></div>
         </div>
     </div>
@@ -58,11 +58,6 @@ $('.color-group').colorpicker();
     </form>
   </div>
 </div>
-<div class="row">
-  <div class="col-xs-12">
-    {{ calendar|safe }}
-  </div>
-</div>
 <div class="mobile">
   {% for day in mobile_list %}
   <div class="row">
@@ -80,6 +75,37 @@ $('.color-group').colorpicker();
   {% endfor %}
 </div>
 <div class="row">
+  <div class="col-xs-12">
+    <table class="table table-bordered desktop">
+      <tr><th class="month" colspan="7"><h3>{{ date.strftime("%B") }} {{ date.strftime("%Y") }}</h3></th></tr>
+      <tr><th class="Sunday">Sunday</th><th class="Monday">Monday</th><th class="Tuesday">Tuesday</th><th class="Wednesday">Wednesday</th><th class="Thursday">Thursday</th><th class="Friday">Friday</th><th class="Saturday">Saturday</th></tr>
+    {% for week in calendar %}
+    <tr>
+    {% for day in week %}
+    {% if day[0] == date.day %}
+      <td class="today">
+    {% else %}
+      <td>
+    {% endif %}
+    {% if day[0] != 0 %}
+        {{ day[0] }}
+    {% endif %}
+    <ol>
+    {% for task in day %}
+    {% if not loop.first %}
+    <li style="color:{{ task[0] }}">
+        {{ task[1] }}
+    </li>
+    {% endif %}
+    {% endfor %}
+    </ol>
+    </td>
+    {% endfor %}
+    </tr>
+    {% endfor %}
+    </table>
+  </div>
+</div>
 {% for category in categories %}
   <div class="col-xs-12 col-md-3">
   <h3><a href="/category/{{ category.id }}" style="color:{{category.color}}">{{category.name}}</a></h3>

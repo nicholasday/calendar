@@ -14,65 +14,6 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 app.secret_key = 'the power of habit'
 
-cssclasses = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-month_name = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-def make_html_calendar(calendar):
-    v = []
-    a = v.append
-    a('<table class="desktop month table table-bordered">')
-    a('\n')
-    a(formatmonthname(themonth=datetime.datetime.now().month, theyear=datetime.datetime.now().year))
-    a('\n')
-    a(formatweekheader())
-    a('\n')
-    for week in calendar:
-        a(formatweek(week))
-        a('\n')
-    a('</table>')
-    a('\n')
-    return ''.join(v)
-
-def formatday(day, weekday):
-    if day[0] == 0:
-        return '<td class="noday">&nbsp;</td>' # day outside month
-    else:
-        if day[0] == datetime.datetime.now().day:
-            s = '<span class="someday">' + str(day[0]) + "</span><ol>"
-        else:
-            s = '<span class="someday">' + str(day[0]) + "</span><ol>"
-
-        for i in range(1, len(day)):
-            s = s + '<li style="color:' + day[i][0] + '">' + str(day[i][1]) + "</li>"
-
-        if day[0] == datetime.datetime.now().day:
-            day_class = cssclasses[weekday] + ' today'
-        else:
-            day_class = cssclasses[weekday]
-
-        return '<td class="%s">%s</ol></td>' % (day_class, s)
-
-def formatweek(theweek):
-    s = ''
-    for d in theweek:
-        #s = s + formatday(d, 1)
-        s = s + formatday(d, datetime.datetime.today().weekday())
-    return '<tr>%s</tr>' % s
-
-def formatweekday(day):
-    return '<th class="%s">%s</th>' % (cssclasses[day], cssclasses[day])
-
-def formatweekheader():
-    s = ''.join(formatweekday(i) for i in range(0,7))
-    return '<tr>%s</tr>' % s
-
-def formatmonthname(theyear, themonth, withyear=True):
-    if withyear:
-        s = '%s %s' % (month_name[themonth - 1], theyear)
-    else:
-        s = '%s' % month_name[themonth]
-    return '<tr><th colspan="7" class="month">%s</th></tr>' % s
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
@@ -169,9 +110,8 @@ def main():
             if (day[0] >= datetime.datetime.now().day) and (day[0] <= (datetime.datetime.now().day + 6)):
                 mobile_list.append(day)
 
-    html_calendar = make_html_calendar(new_list_calendar)
-    date = datetime.datetime.utcnow().strftime('%m/%d/%Y')
-    return render_template('index.html', date=date, categories=categories, calendar=html_calendar, task=None, current_user=current_user, mobile_list=mobile_list)
+    date = datetime.datetime.now()
+    return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, current_user=current_user, mobile_list=mobile_list)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
