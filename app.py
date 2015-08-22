@@ -20,7 +20,7 @@ month_name = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'A
 def make_html_calendar(calendar):
     v = []
     a = v.append
-    a('<table class="month table table-bordered">')
+    a('<table class="desktop month table table-bordered">')
     a('\n')
     a(formatmonthname(themonth=datetime.datetime.now().month, theyear=datetime.datetime.now().year))
     a('\n')

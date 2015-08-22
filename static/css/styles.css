@@ -9,11 +9,20 @@ td {
     display: none;
 }
 @media (max-width: 767px) {
+    .desktop {
+        display: none;
+    }
     .mobile {
         display: block;
     }
     .mobile_list {
         padding-top: 10px;
         padding-bottom: 10px;
+    }
+    .mobile .row {
+        border-top: 1px solid #ccc;
+    }
+    .mobile .row:last-child {
+        border-bottom: 1px solid #ccc;
     }
 }

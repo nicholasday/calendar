@@ -63,8 +63,9 @@ $('.color-group').colorpicker();
     {{ calendar|safe }}
   </div>
 </div>
-<div class="row mobile">
+<div class="mobile">
   {% for day in mobile_list %}
+  <div class="row">
   <div class="col-xs-12 mobile_list">
     {{ day[0] }}
     <ol>
@@ -75,7 +76,7 @@ $('.color-group').colorpicker();
     {% endfor %}
     </ol>
   </div>
-  <hr />
+  </div>
   {% endfor %}
 </div>
 <div class="row">
