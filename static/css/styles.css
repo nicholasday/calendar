@@ -11,6 +11,16 @@ td {
 .today {
     border: 2px solid red;
 }
+.blue {
+    color: #00FFFF;
+}
+.red {
+    color: #FF00FF;
+}
+.green {
+    color: #008000;
+}
+   
 /*td:hover {
     text-overflow: inherit;
     overflow: visible;
