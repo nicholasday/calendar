@@ -163,9 +163,15 @@ def main():
                         if day[0] == task.date.day:
                            day.append([task.category.color, task.name]) 
 
+    mobile_list = []
+    for week in new_list_calendar:
+        for day in week:
+            if (day[0] >= datetime.datetime.now().day) and (day[0] <= (datetime.datetime.now().day + 4)):
+                mobile_list.append(day)
+
     html_calendar = make_html_calendar(new_list_calendar)
     date = datetime.datetime.utcnow().strftime('%m/%d/%Y')
-    return render_template('index.html', date=date, categories=categories, calendar=html_calendar, task=None, current_user=current_user)
+    return render_template('index.html', date=date, categories=categories, calendar=html_calendar, task=None, current_user=current_user, mobile_list=mobile_list)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

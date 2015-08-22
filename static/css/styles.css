@@ -5,3 +5,14 @@ td {
 .today {
     background-color: #E8FDE7;
 }
+.mobile {
+    display: none;
+}
+@media (max-width: 767px) {
+    .mobile {
+        display: block;
+    }
+    .mobile_list {
+        border: 1px solid black;
+    }
+}
