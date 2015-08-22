@@ -37,7 +37,7 @@ month_name = _localized_month('%B')
 def make_html_calendar(calendar):
     v = []
     a = v.append
-    a('<table class="month table">')
+    a('<table border="1" class="month my-table">')
     a('\n')
     a(formatmonthname(datetime.datetime.now().month, datetime.datetime.now().month))
     a('\n')
@@ -59,7 +59,7 @@ def formatday(day, weekday):
             s = s + '<li class="' + day[i][0] + '">' + str(day[i][1]) + "</li>"
 
         if day[0] == datetime.datetime.now().day:
-            day_class = 'today'
+            day_class = cssclasses[weekday] + ' today'
         else:
             day_class = cssclasses[weekday]
 
