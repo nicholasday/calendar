@@ -134,11 +134,13 @@ def main():
                         if day[0] == task.date.day:
                            day.append([task.category.color, task.id, 'task', task.completed, task.name]) 
 
+    date = datetime.datetime.now()
     mobile_list = []
     for week in new_list_calendar:
         for day in week:
-            if day[0] >= datetime.datetime.now().day and day[0] <= (datetime.datetime.now().day + 6):
-                mobile_list = week
+            if day[0] >= date.day and day[0] <= (date.day + 6):
+                date_of_day = datetime.datetime.strptime(str(date.month)+'/'+str(day[0])+'/'+str(date.year), "%-m/%-d/%Y").strftime("%a")
+                mobile_list.append(str(day[0]) + date_of_day)
 
     date = datetime.datetime.now()
     return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, current_user=current_user, mobile_list=mobile_list)
