@@ -283,7 +283,7 @@ def view_due_date(due_date_id=None):
         date = request.form['date']
         name = request.form['name']
         description = request.form['description']
-        if not (category and date and name and description):
+        if not (category and date and name):
             flash("You didn't put in all of the values")
             return redirect(url_for('main'))
         category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
@@ -348,7 +348,7 @@ def view_task(task_id=None):
         date = request.form['date']
         name = request.form['name']
         description = request.form['description']
-        if not (category and date and name and description):
+        if not (category and date and name):
             flash("You didn't put in all of the values")
             return redirect(url_for('main'))
         category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
