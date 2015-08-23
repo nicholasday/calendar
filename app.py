@@ -122,7 +122,8 @@ def register():
 
         user = db.session.query(User).filter_by(username=request.form['username']).first()
         if user is not None:
-            return 'That username is already taken'
+            flash('That username is already taken')
+            return redirect(url_for('main'))
         else:
             user = User(
                 username=request.form['username'],
@@ -131,7 +132,7 @@ def register():
             )
             default_category = Category(
                 name='default',
-                color='black',
+                color='000000',
                 user=user
             )
             db.session.add(user)
@@ -139,10 +140,9 @@ def register():
             db.session.commit()
 
             login_user(user)
+            flash("Click on a calendar box to add a task. Add categories to change the task color. Click on a task to edit it.")
             return redirect(url_for('main'))
 
-        login_user(user)
-        return redirect(url_for('main'))
     return render_template('login.html', current_user=current_user)
 
 @app.route("/logout")

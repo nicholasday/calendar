@@ -9,6 +9,9 @@ function view_task(clicked_id)
 {
     window.location.href = "/task/" + clicked_id;
 }
+$("div.add_task").click(function(event){
+    event.stopPropagation();
+});
 </script>
 <div class="mobile">
       <div class="month"><h3>{{ date.strftime("%B") }} {{ date.year }}</h3></div>
