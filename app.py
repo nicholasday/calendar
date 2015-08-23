@@ -191,6 +191,15 @@ def delete_task(task_id):
     db.session.commit()
     return redirect(url_for('main'))
 
+@app.route("/delete")
+@login_required
+def delete():
+    user = User.query.filter_by(id=current_user.get_id()).first()
+    db.session.delete(user)
+    logout_user()
+    db.session.commit()
+    return redirect(url_for('main'))
+
 @app.route("/task/<task_id>", methods=['GET', 'POST'])
 @app.route("/task", methods=["POST", "GET"])
 @login_required
