@@ -3,7 +3,7 @@
 <script>
 function add_task(clicked_id)
 {
-    window.location.href = "/date/" + clicked_id;
+    window.location.href = "/both/date/" + clicked_id;
 }
 function view_task(clicked_id)
 {
@@ -22,7 +22,19 @@ $("div.add_task").click(function(event){
     <ol>
     {% for task in day %}
       {% if not loop.first %}
-        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">{{ task[2] }}</a></li>
+        {% if task[2] == "due_date" %}
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">{{ task[3] }}</span></a></li>
+        {% elif task[2] == "task" %}
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
+            {% if task[3] == True %}
+            <s>
+            {{ task[4] }}
+            </s>
+            {% else %}
+            {{ task[4] }}
+            {% endif %}
+        </a></li>
+        {% endif %}
       {% endif %}
     {% endfor %}
     </ol>
@@ -51,7 +63,19 @@ $("div.add_task").click(function(event){
     <ol>
     {% for task in day %}
     {% if not loop.first %}
-    <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">{{ task[2] }}</a></li>
+        {% if task[2] == "due_date" %}
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">{{ task[3] }}</span></a></li>
+        {% elif task[2] == "task" %}
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
+            {% if task[3] == True %}
+            <s>
+            {{ task[4] }}
+            </s>
+            {% else %}
+            {{ task[4] }}
+            {% endif %}
+        </a></li>
+        {% endif %}
     {% endif %}
     {% endfor %}
     </ol>
@@ -67,8 +91,23 @@ $("div.add_task").click(function(event){
   <div class="col-xs-12 col-md-3">
   <h3><a href="/category/{{ category.id }}" style="color:{{category.color}}">{{category.name}}</a></h3>
   <ul>
+  {% for due_date in category.due_dates %}
+  <li><a href="/due_date/{{ due_date.id
+  }}"><span style="background-color:{{ due_date.category.color }}; color: white;">{{ due_date.name }}</a> {{due_date.date.strftime('%m/%d/%Y') }}
+    <a href="/task/{{ due_date.id }}/delete">delete</a>
+  <br />{{ due_date.description }}
+  </li>
+  {% endfor %}
   {% for task in category.tasks %}
-  <li><a href="/task/{{ task.id }}">{{ task.name }}</a> {{task.date.strftime('%m/%d/%Y') }}
+  <li><a style="color: {{task.category.color }}" href="/task/{{task.id }}">
+      {% if task.completed == True %}
+      <s>
+      {{ task.name }}
+      </s>
+      {% else %}
+      {{ task.name }}
+      {% endif %}
+    </a> {{task.date.strftime('%m/%d/%Y') }}
     <a href="/task/{{ task.id }}/delete">delete</a>
   <br />{{ task.description }}
   </li>
