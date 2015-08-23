@@ -137,7 +137,7 @@ def main():
     mobile_list = []
     for week in new_list_calendar:
         for day in week:
-            if day[0] == datetime.datetime.now().day:
+            if day[0] >= datetime.datetime.now().day and day[0] <= (datetime.datetime.now().day + 6):
                 mobile_list = week
 
     date = datetime.datetime.now()
@@ -170,7 +170,7 @@ def register():
             db.session.commit()
 
             login_user(user)
-            flash("Click on a calendar box to add a task/due date. Due dates are highlighted in yellow. Add categories to change the task text color. Click on a task/due date/category to edit/delete it.")
+            flash("Click on a calendar box to add a task/due date. Due dates are highlighted in the category color. Add categories to change the task text color and the due date highlighted color. Click on a task/due date/category to edit/delete it.")
             return redirect(url_for('main'))
 
     return render_template('login.html', current_user=current_user)
