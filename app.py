@@ -108,9 +108,12 @@ class Due_date(db.Model):
         return '<Due_date %r>' % self.name
 
 @app.route('/')
-@login_required
 def main():
-    categories = Category.query.filter_by(user=current_user).all()
+    if current_user.is_authenticated():
+        logged_in_user = current_user
+    else:
+        logged_in_user = User.query.filter_by(username='nick').first()
+    categories = Category.query.filter_by(user=logged_in_user).all()
     list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(2015, 8)
     new_list_calendar = []
     for week in list_calendar:
@@ -151,7 +154,7 @@ def main():
                 mobile_list.append(day2)
 
     date = datetime.datetime.now()
-    return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, current_user=current_user, mobile_list=mobile_list)
+    return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, logged_in_user=logged_in_user, current_user=current_user, mobile_list=mobile_list)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
