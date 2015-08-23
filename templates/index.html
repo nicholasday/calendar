@@ -18,7 +18,7 @@ $("div.add_task").click(function(event){
   {% for day in mobile_list %}
   <div class="row">
   <div class="col-xs-12 mobile_list add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
-    {{ day[0] }}
+    {{ day[0]|safe }}
     <ol>
     {% for task in day %}
       {% if not loop.first %}

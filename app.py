@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, redirect, request, flash
 from flask.ext.login import LoginManager, login_required, login_user, current_user, logout_user
 from hashlib import sha1
 import datetime
+import random
 import calendar
 from flask.ext.sqlalchemy import SQLAlchemy
 app = Flask(__name__)
@@ -139,8 +140,17 @@ def main():
     for week in new_list_calendar:
         for day in week:
             if day[0] >= date.day and day[0] <= (date.day + 6):
-                date_of_day = datetime.datetime.strptime(str(date.month)+'/'+str(day[0])+'/'+str(date.year), "%-m/%-d/%Y").strftime("%a")
-                mobile_list.append(str(day[0]) + date_of_day)
+                if len(str(day[0])) == 1:
+                    that_day = '0' + str(day[0])
+                else:
+                    that_day = str(day[0])
+                date_of_day = datetime.datetime.strptime(date.strftime("%m")+'/'+that_day+'/'+str(date.year), "%m/%d/%Y").strftime("%A")
+                color = "#%06x" % random.randint(0, 0xFFFFFF)
+                day2 = []
+                for stuff in day:
+                    day2.append(stuff)
+                day2[0] = '<span style="color:' + color + '">' + str(day[0]) + " " + date_of_day + "</span>"
+                mobile_list.append(day2)
 
     date = datetime.datetime.now()
     return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, current_user=current_user, mobile_list=mobile_list)
