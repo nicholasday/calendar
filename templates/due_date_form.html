@@ -25,10 +25,8 @@
     <label for="category-input">Category</label>
     <select name="category" form="new_due_date" class="form-control" autocomplete="off">
     {% for category in categories %}
-    {% if due_date %}
-        {% if category.name == due_date.category.name %}
-        <option value="{{ category.name }}" selected="selected">{{ category.name }}</option>
-        {% endif %}
+    {% if due_date and category.name == due_date.category.name %}
+    <option value="{{ category.name }}" selected="selected">{{ category.name }}</option>
     {% else %}
     <option value="{{ category.name }}">{{ category.name }}</option>
     {% endif %}
