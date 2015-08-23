@@ -6,9 +6,13 @@ $("#datepicker-input").datepicker({
     format: 'mm/dd/yyyy'
 });
 });
+$(function(){
+    $(".color-group-update").colorpicker();
+});
 </script>
 <div class="row">
 {% include "task_form.html" %}
 {% include "due_date_form.html" %}
+{% include "category_form.html" %}
 </div>
 {% endblock %}

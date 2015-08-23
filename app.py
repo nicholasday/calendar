@@ -139,7 +139,7 @@ def main():
     mobile_list = []
     for week in new_list_calendar:
         for day in week:
-            if day[0] >= date.day and day[0] <= (date.day + 6):
+            if day[0] >= (date.day - 1) and day[0] <= (date.day + 6):
                 if len(str(day[0])) == 1:
                     that_day = '0' + str(day[0])
                 else:

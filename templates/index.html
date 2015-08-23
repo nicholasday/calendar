@@ -17,7 +17,11 @@ $("div.add_task").click(function(event){
       <div class="month"><h3>{{ date.strftime("%B") }} {{ date.year }}</h3></div>
   {% for day in mobile_list %}
   <div class="row">
+  {% if day[0][0] == date.day %}
+  <div class="col-xs-12 mobile_list add_task today" onclick="add_task(this.id)" id="{{ day[0][0] }}">
+  {% else %}
   <div class="col-xs-12 mobile_list add_task" onclick="add_task(this.id)" id="{{ day[0][0] }}">
+  {% endif %}
     <span style="color: {{ day[0][1] }} ">
     {{ day[0][0] }}
     {{ day[0][2] }}
