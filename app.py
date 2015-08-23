@@ -132,7 +132,7 @@ def register():
             )
             default_category = Category(
                 name='default',
-                color='000000',
+                color='#000000',
                 user=user
             )
             db.session.add(user)

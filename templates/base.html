@@ -32,6 +32,7 @@
       <a class="navbar-brand" href="/">Home</a>
     </div>
 
+    {% if current_user.get_id() != None %}
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/category">Add Category</a></li>
@@ -45,6 +46,7 @@
         </li>
       </ul>
     </div>
+    {% endif %}
   </div>
 </nav>
 <div class="container">

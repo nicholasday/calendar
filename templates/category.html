@@ -23,7 +23,11 @@ $(function(){
     <div class="form-group">
         <label for="color-input">Color</label>
         <div class="input-group color-group-update">
+            {% if category %}
+            <input type="text" class="form-control" id="color-input" name="color" value="{{ category.color }}" />
+            {% else %}
             <input type="text" class="form-control" id="color-input" name="color" value="00AABB" />
+            {% endif %}
             <span class="input-group-addon"><i></i></span>
         </div>
     </div>
