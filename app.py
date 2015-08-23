@@ -146,10 +146,8 @@ def main():
                     that_day = str(day[0])
                 date_of_day = datetime.datetime.strptime(date.strftime("%m")+'/'+that_day+'/'+str(date.year), "%m/%d/%Y").strftime("%A")
                 color = "#%06x" % random.randint(0, 0xFFFFFF)
-                day2 = []
-                for stuff in day:
-                    day2.append(stuff)
-                day2[0] = '<span style="color:' + color + '">' + str(day[0]) + " " + date_of_day + "</span>"
+                day2 = [stuff for stuff in day]
+                day2[0] = [day[0], color, date_of_day]
                 mobile_list.append(day2)
 
     date = datetime.datetime.now()
