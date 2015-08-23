@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, flash
 from flask.ext.login import LoginManager, login_required, login_user, current_user, logout_user
 from hashlib import sha1
 import datetime
@@ -102,13 +102,13 @@ def main():
                 for week in new_list_calendar:
                     for day in week:
                         if day[0] == task.date.day:
-                           day.append([task.category.color, task.name]) 
+                           day.append([task.category.color, task.id, task.name]) 
 
     mobile_list = []
     for week in new_list_calendar:
         for day in week:
-            if (day[0] >= datetime.datetime.now().day) and (day[0] <= (datetime.datetime.now().day + 6)):
-                mobile_list.append(day)
+            if day[0] == datetime.datetime.now().day:
+                mobile_list = week
 
     date = datetime.datetime.now()
     return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, current_user=current_user, mobile_list=mobile_list)
@@ -167,24 +167,6 @@ def login():
         return redirect(url_for('main'))
     return render_template('login.html', current_user=current_user)
 
-@app.route("/category", methods=["POST"])
-@login_required
-def create_category():
-    if request.method == 'POST':
-        category = request.form['name']
-        color = request.form['color']
-        if not (category and color):
-            flash("You didn't put in all of the values")
-            return redirect(url_for('main'))
-        category_search = Category.query.filter_by(name=category, user=current_user).first()
-        if category_search is not None:
-            flash("You already created a category with that name")
-            return redirect(url_for('main'))
-        new_category = Category(category, color, current_user)
-        db.session.add(new_category)
-        db.session.commit()
-        return redirect(url_for('main'))
-
 @app.route("/task", methods=["POST"])
 @login_required
 def create_task():
@@ -204,6 +186,16 @@ def create_task():
         db.session.add(new_task)
         db.session.commit()
         return redirect(url_for('main'))
+
+@app.route("/date/<date>")
+@login_required
+def create_task_date(date):
+    if len(date) == 1:
+        date = datetime.datetime.now().strftime('%m') + '/0' + date + '/' + str(datetime.datetime.now().year)
+    else:
+        date = datetime.datetime.now().strftime('%m') + '/' + date + '/' + str(datetime.datetime.now().year)
+    categories = Category.query.filter_by(user=current_user).all()
+    return render_template("task.html", date=date, categories=categories, current_user=current_user, task=None)
 
 @app.route("/task/<task_id>/delete")
 @login_required
@@ -231,7 +223,8 @@ def view_task(task_id):
             flash("No task with that name")
             return redirect(url_for('main'))
         categories = Category.query.filter_by(user=current_user).all()
-        return render_template("task.html", task=task, categories=categories, current_user=current_user)
+        date = task.date.strftime('%m/%d/%Y')
+        return render_template("task.html", task=task, categories=categories, current_user=current_user, date=date)
     elif request.method == 'POST':
         if task_id is None:
             flash("No task selected")
@@ -249,21 +242,27 @@ def view_task(task_id):
         return redirect(url_for('main'))
 
 @app.route("/category/<category_id>", methods=['GET', 'POST'])
+@app.route("/category", methods=["POST", "GET"])
 @login_required
-def view_category(category_id):
+def view_category(category_id=None):
     if request.method == 'GET':
-        if category_id is None:
-            flash("No category selected")
-            return redirect(url_for('main'))
         category = Category.query.filter_by(id=category_id, user=current_user).first()
-        if category is None:
-            flash("No category with that name")
-            return redirect(url_for('main'))
         return render_template("category.html", category=category, current_user=current_user)
-    elif request.method == 'POST':
-        if category_id is None:
-            flash("No category selected")
+    elif request.method == 'POST' and category_id == None:
+        category = request.form['name']
+        color = request.form['color']
+        if not (category and color):
+            flash("You didn't put in all of the values")
             return redirect(url_for('main'))
+        category_search = Category.query.filter_by(name=category, user=current_user).first()
+        if category_search is not None:
+            flash("You already created a category with that name")
+            return redirect(url_for('main'))
+        new_category = Category(category, color, current_user)
+        db.session.add(new_category)
+        db.session.commit()
+        return redirect(url_for('main'))
+    elif request.method == 'POST' and category_id is not None:
         category = Category.query.filter_by(id=category_id, user=current_user).first()
         if category is None:
             flash("No category with that name")

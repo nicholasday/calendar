@@ -1,72 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
 <script>
-$(function() {
-$("#datepicker-input").datepicker({
-    format: 'mm/dd/yyyy'
-});
-$('.color-group').colorpicker();
-});
+function add_task(clicked_id)
+{
+    window.location.href = "/date/" + clicked_id;
+}
+function view_task(clicked_id)
+{
+    window.location.href = "/task/" + clicked_id;
+}
 </script>
-<div class="row">
-  <div class="col-xs-6 col-md-3">
-    <form action="/task" method="post" id="new_task" class="">
-    <div class="form-group">
-        <label for="name-input">Name</label>
-        <input type="text" class="form-control" id="name-input" name="name" placeholder="Name" />
-    </div>
-    <div class="form-group">
-        <label for="description-input">Description</label>
-        <textarea class="form-control" id="description-input" name="description" placeholder="Description" rows="3"></textarea>
-    </div>
-    <div class="form-group">
-        <label for="category-input">Category</label>
-        <select name="category" form="new_task" class="form-control">
-        {% for category in categories %}
-        <option value="{{ category.name }}">{{ category.name }}</option>
-        {% endfor %}
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="datepicker-input">Date</label>
-        <div class="input-group date">
-            <input type="text" name="date" class="form-control" id="datepicker-input" value="{{ date.strftime("%m/%d/%Y") }}" autocomplete="off">
-            <div class="input-group-addon"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></div>
-        </div>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-default">Add Task</button>
-    </div>
-    </form>  
-  </div>
-  <div class="col-xs-6 col-md-3">
-    <form action="/category" method="post" id="new_category">
-    <div class="form-group">
-        <label for="new-category-input">Category</label>
-        <input type="text" class="form-control" id="new-category-input" name="name" placeholder="Name" />
-    </div>
-    <div class="form-group">
-        <label for="color-input">Color</label>
-        <div class="input-group color-group">
-            <input type="text" class="form-control" id="color-input" name="color" value="00AABB" />
-            <span class="input-group-addon"><i></i></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-default">Add Category</button>
-    </div>
-    </form>
-  </div>
-</div>
 <div class="mobile">
   {% for day in mobile_list %}
   <div class="row">
-  <div class="col-xs-12 mobile_list">
+  <div class="col-xs-12 mobile_list add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
     {{ day[0] }}
     <ol>
-    {% for item in day %}
+    {% for task in day %}
       {% if not loop.first %}
-        <li style="color:{{ item[0] }}">{{ item[1] }}</li>
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">{{ task[2] }}</a></li>
       {% endif %}
     {% endfor %}
     </ol>
@@ -83,7 +35,9 @@ $('.color-group').colorpicker();
     <tr>
     {% for day in week %}
     {% if day[0] == date.day %}
-      <td class="today">
+      <td class="today add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
+    {% elif day[0] != 0 %}
+      <td class="add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
     {% else %}
       <td>
     {% endif %}
@@ -93,9 +47,7 @@ $('.color-group').colorpicker();
     <ol>
     {% for task in day %}
     {% if not loop.first %}
-    <li style="color:{{ task[0] }}">
-        {{ task[1] }}
-    </li>
+    <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">{{ task[2] }}</a></li>
     {% endif %}
     {% endfor %}
     </ol>
@@ -106,6 +58,7 @@ $('.color-group').colorpicker();
     </table>
   </div>
 </div>
+<div class="row">
 {% for category in categories %}
   <div class="col-xs-12 col-md-3">
   <h3><a href="/category/{{ category.id }}" style="color:{{category.color}}">{{category.name}}</a></h3>
