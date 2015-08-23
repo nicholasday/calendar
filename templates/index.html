@@ -11,6 +11,7 @@ function view_task(clicked_id)
 }
 </script>
 <div class="mobile">
+      <div class="month"><h3>{{ date.strftime("%B") }} {{ date.year }}</h3></div>
   {% for day in mobile_list %}
   <div class="row">
   <div class="col-xs-12 mobile_list add_task" onclick="add_task(this.id)" id="{{ day[0] }}">

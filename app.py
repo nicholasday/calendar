@@ -167,26 +167,6 @@ def login():
         return redirect(url_for('main'))
     return render_template('login.html', current_user=current_user)
 
-@app.route("/task", methods=["POST"])
-@login_required
-def create_task():
-    if request.method == 'POST':
-        category = request.form['category']
-        date = request.form['date']
-        name = request.form['name']
-        description = request.form['description']
-        if not (category and date and name and description):
-            flash("You didn't put in all of the values")
-            return redirect(url_for('main'))
-        category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
-        if category is None:
-            flash("No category with that name")
-            return redirect(url_for('main'))
-        new_task = Task(name, category, description, date, current_user)
-        db.session.add(new_task)
-        db.session.commit()
-        return redirect(url_for('main'))
-
 @app.route("/date/<date>")
 @login_required
 def create_task_date(date):
@@ -212,23 +192,18 @@ def delete_task(task_id):
     return redirect(url_for('main'))
 
 @app.route("/task/<task_id>", methods=['GET', 'POST'])
+@app.route("/task", methods=["POST", "GET"])
 @login_required
-def view_task(task_id):
+def view_task(task_id=None):
     if request.method == 'GET':
-        if task_id is None:
-            flash("No task selected")
-            return redirect(url_for('main'))
         task = Task.query.filter_by(id=task_id, user=current_user).first()
-        if task is None:
-            flash("No task with that name")
-            return redirect(url_for('main'))
         categories = Category.query.filter_by(user=current_user).all()
-        date = task.date.strftime('%m/%d/%Y')
+        if task is not None:
+            date = task.date.strftime('%m/%d/%Y')
+        else:
+            date = datetime.datetime.now().strftime('%m/%d/%Y')
         return render_template("task.html", task=task, categories=categories, current_user=current_user, date=date)
-    elif request.method == 'POST':
-        if task_id is None:
-            flash("No task selected")
-            return redirect(url_for('main'))
+    elif request.method == 'POST' and task_id is not None:
         task = Task.query.filter_by(id=task_id, user=current_user).first()
         if task is None:
             flash("No task with that name")
@@ -238,6 +213,22 @@ def view_task(task_id):
         task.category = category
         task.description = request.form['description']
         task.date = datetime.datetime.strptime(request.form['date'], "%m/%d/%Y")
+        db.session.commit()
+        return redirect(url_for('main'))
+    if request.method == 'POST' and task_id is None:
+        category = request.form['category']
+        date = request.form['date']
+        name = request.form['name']
+        description = request.form['description']
+        if not (category and date and name and description):
+            flash("You didn't put in all of the values")
+            return redirect(url_for('main'))
+        category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
+        if category is None:
+            flash("No category with that name")
+            return redirect(url_for('main'))
+        new_task = Task(name, category, description, date, current_user)
+        db.session.add(new_task)
         db.session.commit()
         return redirect(url_for('main'))
 
