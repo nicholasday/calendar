@@ -108,11 +108,15 @@ class Due_date(db.Model):
         return '<Due_date %r>' % self.name
 
 @app.route('/')
-def main():
-    if current_user.is_authenticated():
-        logged_in_user = current_user
+@app.route('/user/<user_id>')
+def main(user_id=None):
+    if user_id and current_user.username == 'nick':
+        logged_in_user = User.query.filter_by(id=user_id).first()
     else:
-        logged_in_user = User.query.filter_by(username='nick').first()
+        if current_user.is_authenticated():
+            logged_in_user = current_user
+        else:
+            logged_in_user = User.query.filter_by(username='nick').first()
     categories = Category.query.filter_by(user=logged_in_user).all()
     list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(2015, 8)
     new_list_calendar = []
@@ -155,6 +159,15 @@ def main():
 
     date = datetime.datetime.now()
     return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, logged_in_user=logged_in_user, current_user=current_user, mobile_list=mobile_list)
+
+@app.route('/users')
+@login_required
+def list_users():
+    if current_user.username == 'nick':
+        users = User.query.all()
+        return render_template("users.html", users=users)
+    else:
+        return redirect(url_for('main'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
