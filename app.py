@@ -299,7 +299,8 @@ def view_due_date(due_date_id=None):
         due_date.description = request.form['description']
         due_date.date = datetime.datetime.strptime(request.form['date'], "%m/%d/%Y")
         db.session.commit()
-        return redirect(url_for('main'))
+        month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
+        return redirect(url_for('main', month=month))
     if request.method == 'POST' and due_date_id is None:
         category = request.form['category']
         date = request.form['date']
@@ -368,7 +369,8 @@ def view_task(task_id=None):
             task.completed = False
         task.date = datetime.datetime.strptime(request.form['date'], "%m/%d/%Y")
         db.session.commit()
-        return redirect(url_for('main'))
+        month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
+        return redirect(url_for('main', month=month))
     if request.method == 'POST' and task_id is None:
         category = request.form['category']
         date = request.form['date']
