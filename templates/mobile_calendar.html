@@ -20,9 +20,9 @@
   {% for day in week %}
   <div class="row">
   {% if day[0] == date.day and date.month == month_number and year == date.year %}
-  <div class="col-xs-12 mobile_list add_task today" onclick="add_task(this.id)" id="{{ day[0] }}">
+  <div class="col-xs-12 mobile_list add_task today" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
   {% else %}
-  <div class="col-xs-12 mobile_list add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
+  <div class="col-xs-12 mobile_list add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
   {% endif %}
     {{ day[0] }}
     {{ days[loop.index0] }}

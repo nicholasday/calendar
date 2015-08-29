@@ -13,9 +13,9 @@
     <tr>
     {% for day in week %}
     {% if day[0] == date.day and date.month == month and date.year == year %}
-      <td class="today add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
+      <td class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
     {% elif day[0] != 0 %}
-      <td class="add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
+      <td class="add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
     {% else %}
       <td>
     {% endif %}

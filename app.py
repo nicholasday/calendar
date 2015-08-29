@@ -317,13 +317,16 @@ def view_due_date(due_date_id=None):
         db.session.commit()
         return redirect(url_for('main'))
 
-@app.route("/both/date/<date>")
+@app.route("/both/date/<month>/<day>/<year>")
 @login_required
-def create_task_and_due_date_date(date):
-    if len(date) == 1:
-        date = datetime.datetime.now().strftime('%m') + '/0' + date + '/' + str(datetime.datetime.now().year)
+def create_task_and_due_date_date(month, day, year):
+    if not (month and day and year):
+        flash("Something happened. Not all the values were put in")
+        return redirect(url_for('main'))
+    if len(day) == 1:
+        date = month + '/0' + day + '/' + year
     else:
-        date = datetime.datetime.now().strftime('%m') + '/' + date + '/' + str(datetime.datetime.now().year)
+        date = month + '/' + day + '/' + year
     categories = Category.query.filter_by(user=current_user).all()
     return render_template("both_forms.html", date=date, categories=categories, current_user=current_user, task=None, due_date=None)
 
