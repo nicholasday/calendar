@@ -12,6 +12,7 @@
   {% endfor %}
   {% if current_user.is_authenticated() %}
   {% for task in category.tasks %}
+  {% if task.completed == False %}
   <li><a style="color: {{task.category.color }}" href="/task/{{task.id }}">
       {% if task.completed == True %}
       <s>
@@ -24,6 +25,7 @@
     <a href="/task/{{ task.id }}/delete">delete</a>
   <br />{{ task.description }}
   </li>
+  {% endif %}
   {% endfor %}
   {% endif %}
   </ul>
