@@ -1,0 +1,38 @@
+<div class="row">
+{% for category in categories %}
+  <div class="col-xs-12 col-md-3">
+  <h3><a href="/category/{{ category.id }}" style="color:{{category.color}}">{{category.name}}</a></h3>
+  <ul>
+  {% for due_date in category.due_dates %}
+  <li><a href="/due_date/{{ due_date.id
+  }}"><span style="background-color:{{ due_date.category.color }}; color: white;">&nbsp;{{ due_date.name }}&nbsp;</a> {{due_date.date.strftime('%m/%d/%Y') }}
+    <a href="/task/{{ due_date.id }}/delete">delete</a>
+  <br />{{ due_date.description }}
+  </li>
+  {% endfor %}
+  {% if current_user.is_authenticated() %}
+  {% for task in category.tasks %}
+  <li><a style="color: {{task.category.color }}" href="/task/{{task.id }}">
+      {% if task.completed == True %}
+      <s>
+      {{ task.name }}
+      </s>
+      {% else %}
+      {{ task.name }}
+      {% endif %}
+    </a> {{task.date.strftime('%m/%d/%Y') }}
+    <a href="/task/{{ task.id }}/delete">delete</a>
+  <br />{{ task.description }}
+  </li>
+  {% endfor %}
+  {% endif %}
+  </ul>
+  </div>
+{% if loop.index % 4 == 0 and not loop.last %}
+  </div>
+  <div class="row">
+{% endif %}
+  {% if loop.last %}
+  </div>
+  {% endif %}
+{% endfor %}

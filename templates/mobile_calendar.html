@@ -1,0 +1,55 @@
+<div class="mobile">
+  <div class="row">
+    <div class="col-xs-4 center">
+    {% if week == 0 %}
+    <a href="/date/{{ month_number }}/{{ len(week_number) - 1 }}/{{ year }}">previous</a>
+    {% else %}
+    <a href="/date/{{ month_number }}/{{ week_number - 1 }}/{{ year }}">previous</a>
+    {% endif %}
+    </div>
+    <div class="col-xs-4 center">
+  <div class="month">
+    <h3>{{ month }} {{ year }}</h3></div>
+    </div>
+    <div class="col-xs-4 center">
+      <a href="/date/{{ month_number }}/{{ week_number + 1 }}/{{ year }}">next</a>
+    </div>
+    </div>
+  {% for week in calendar %}
+  {% if loop.index0 == week_number %}
+  {% for day in week %}
+  <div class="row">
+  {% if day[0] == date.day and date.month == month_number and year == date.year %}
+  <div class="col-xs-12 mobile_list add_task today" onclick="add_task(this.id)" id="{{ day[0] }}">
+  {% else %}
+  <div class="col-xs-12 mobile_list add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
+  {% endif %}
+    <span style="color: {{ day[0][1] }} ">
+    {{ day[0] }}
+    {{ days[loop.index0] }}
+    </span>
+    <ol>
+    {% for task in day %}
+      {% if not loop.first %}
+        {% if task[2] == "due_date" %}
+        <li id="{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">&nbsp;{{ task[3] }}&nbsp;</span></a></li>
+        {% elif task[2] == "task" %}
+        <li id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
+            {% if task[3] == True %}
+            <s>
+            {{ task[4] }}
+            </s>
+            {% else %}
+            {{ task[4] }}
+            {% endif %}
+        </a></li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    </ol>
+  </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endfor %}
+</div>

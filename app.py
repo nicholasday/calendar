@@ -107,9 +107,12 @@ class Due_date(db.Model):
     def __repr__(self):
         return '<Due_date %r>' % self.name
 
-@app.route('/')
+@app.route('/date/<int:month>')
+@app.route('/date/<int:month>/<int:week_number>')
+@app.route('/date/<int:month>/<int:week_number>/<int:year>')
 @app.route('/user/<user_id>')
-def main(user_id=None):
+@app.route('/')
+def main(user_id=None, month=None, week_number=None, year=None):
     if user_id and current_user.username == 'nick':
         logged_in_user = User.query.filter_by(id=user_id).first()
     else:
@@ -118,7 +121,14 @@ def main(user_id=None):
         else:
             logged_in_user = User.query.filter_by(username='nick').first()
     categories = Category.query.filter_by(user=logged_in_user).all()
-    list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(2015, 8)
+
+    if month == None:
+        month = datetime.datetime.now().month
+
+    if year == None:
+        year = datetime.datetime.now().year
+
+    list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(year, month)
     new_list_calendar = []
     for week in list_calendar:
         new_week = []
@@ -128,37 +138,33 @@ def main(user_id=None):
 
     for category in categories:
         for due_date in category.due_dates:
-            if due_date.date.month == datetime.datetime.now().month:
+            if due_date.date.month == month:
                 for week in new_list_calendar:
                     for day in week:
-                        if day[0] == due_date.date.day:
+                        if day[0] == due_date.date.day and month == due_date.date.month and year == due_date.date.year:
                            day.append([due_date.category.color, due_date.id, 'due_date', due_date.name]) 
     
     for category in categories:
         for task in category.tasks:
-            if task.date.month == datetime.datetime.now().month:
+            if task.date.month == month:
                 for week in new_list_calendar:
                     for day in week:
-                        if day[0] == task.date.day:
+                        if day[0] == task.date.day and month == task.date.month and year == task.date.year:
                            day.append([task.category.color, task.id, 'task', task.completed, task.name]) 
 
     date = datetime.datetime.now()
-    mobile_list = []
-    for week in new_list_calendar:
-        for day in week:
-            if day[0] >= (date.day - 1) and day[0] <= (date.day + 6):
-                if len(str(day[0])) == 1:
-                    that_day = '0' + str(day[0])
-                else:
-                    that_day = str(day[0])
-                date_of_day = datetime.datetime.strptime(date.strftime("%m")+'/'+that_day+'/'+str(date.year), "%m/%d/%Y").strftime("%A")
-                color = "#%06x" % random.randint(0, 0xFFFFFF)
-                day2 = [stuff for stuff in day]
-                day2[0] = [day[0], color, date_of_day]
-                mobile_list.append(day2)
+
+    if week_number is None:
+        week_number = 0
+        for index, week in enumerate(new_list_calendar, start=0):
+            for day in week:
+                if day[0] == date.day:
+                    week_number = index
+
+    days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
     date = datetime.datetime.now()
-    return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, logged_in_user=logged_in_user, current_user=current_user, mobile_list=mobile_list)
+    return render_template('index.html', days=days, week_number=week_number, month=calendar.month_name[month], month_number=month, year=year, date=date, categories=categories, calendar=new_list_calendar, logged_in_user=logged_in_user, current_user=current_user)
 
 @app.route('/users')
 @login_required
