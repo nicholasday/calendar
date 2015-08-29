@@ -26,7 +26,9 @@
     {% for task in day %}
     {% if not loop.first %}
         {% if task[2] == "due_date" %}
+            {% if day[0] >= date.day %}
         <li style="color:{{ task[0] }}" id="{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">&nbsp;{{ task[3] }}&nbsp;</span></a></li>
+             {% endif %}
         {% elif task[2] == "task" and current_user.is_authenticated() %}
             {% if task[3] == True %}
         <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:grey !important; " href="/task/{{ task[1] }}">
