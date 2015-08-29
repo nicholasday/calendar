@@ -315,7 +315,8 @@ def view_due_date(due_date_id=None):
         new_due_date = Due_date(name, category, description, date, current_user)
         db.session.add(new_due_date)
         db.session.commit()
-        return redirect(url_for('main'))
+        month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
+        return redirect(url_for('main', month=month))
 
 @app.route("/both/date/<month>/<day>/<year>")
 @login_required
@@ -383,7 +384,8 @@ def view_task(task_id=None):
         new_task = Task(name, category, description, date, current_user)
         db.session.add(new_task)
         db.session.commit()
-        return redirect(url_for('main'))
+        month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
+        return redirect(url_for('main', month=month))
 
 @app.route("/category/<category_id>", methods=['GET', 'POST'])
 @app.route("/category", methods=["POST", "GET"])
