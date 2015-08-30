@@ -279,30 +279,31 @@ def delete_note(note_id):
 
 
 @app.route("/notes", methods=["POST", "GET"])
+def view_notes():
+        categories = Category.query.filter_by(user=current_user).all()
+        return render_template("note.html", current_user=current_user, categories=categories)
+
 @app.route("/note/<note_id>", methods=['GET', 'POST'])
 @app.route("/note", methods=["POST", "GET"])
 @login_required
 def view_note(note_id=None):
     if request.method == 'GET':
-        notes = None
         note = None
         if note_id is not None:
             note = Note.query.filter_by(id=note_id, user=current_user).first()
-        else:
-            notes = Note.query.all()
         categories = Category.query.filter_by(user=current_user).all()
-        return render_template("note.html", note=note, current_user=current_user, categories=categories)
+        return render_template("add_note.html", note=note, current_user=current_user, categories=categories)
     elif request.method == 'POST' and note_id is not None:
         note = Note.query.filter_by(id=note_id, user=current_user).first()
         if note is None:
             flash("No note with that name")
-            return redirect(url_for('view_note'))
+            return redirect(url_for('view_notes'))
         category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
         note.name = request.form['name']
         note.category = category
         note.content = request.form['content']
         db.session.commit()
-        return redirect(url_for('view_note'))
+        return redirect(url_for('view_notes'))
     if request.method == 'POST' and note_id is None:
         category = request.form['category']
         name = request.form['name']
@@ -317,7 +318,7 @@ def view_note(note_id=None):
         new_note = Note(name, category, content, current_user)
         db.session.add(new_note)
         db.session.commit()
-        return redirect(url_for('view_note'))
+        return redirect(url_for('view_notes'))
 
 @app.route("/delete")
 @login_required
