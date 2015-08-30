@@ -87,6 +87,26 @@ class Task(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.name
 
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship("Category", backref=db.backref('notes', lazy="dynamic"))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship("User", backref=db.backref('notes', lazy="dynamic"))
+    date = db.Column(db.DateTime)
+    content = db.Column(db.Text)
+
+    def __init__(self, name, category, content, user):
+        self.name = name
+        self.category = category
+        self.user = user
+        self.content = content
+        self.date = datetime.datetime.now()
+
+    def __repr__(self):
+        return '<Note %r>' % self.name
+
 class Due_date(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
@@ -242,6 +262,62 @@ def delete_task(task_id):
     db.session.delete(task)
     db.session.commit()
     return redirect(url_for('main'))
+
+@app.route("/note/<note_id>/delete")
+@login_required
+def delete_note(note_id):
+    if note_id is None:
+        flash("No note selected to be deleted")
+        return redirect(url_for('view_note'))
+    note = Note.query.filter_by(id=note_id, user=current_user).first()
+    if note is None:
+        flash("No note with that name")
+        return redirect(url_for('view_note'))
+    db.session.delete(note)
+    db.session.commit()
+    return redirect(url_for('view_note'))
+
+
+@app.route("/notes", methods=["POST", "GET"])
+@app.route("/note/<note_id>", methods=['GET', 'POST'])
+@app.route("/note", methods=["POST", "GET"])
+@login_required
+def view_note(note_id=None):
+    if request.method == 'GET':
+        notes = None
+        note = None
+        if note_id is not None:
+            note = Note.query.filter_by(id=note_id, user=current_user).first()
+        else:
+            notes = Note.query.all()
+        categories = Category.query.filter_by(user=current_user).all()
+        return render_template("note.html", note=note, current_user=current_user, categories=categories)
+    elif request.method == 'POST' and note_id is not None:
+        note = Note.query.filter_by(id=note_id, user=current_user).first()
+        if note is None:
+            flash("No note with that name")
+            return redirect(url_for('view_note'))
+        category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
+        note.name = request.form['name']
+        note.category = category
+        note.content = request.form['content']
+        db.session.commit()
+        return redirect(url_for('view_note'))
+    if request.method == 'POST' and note_id is None:
+        category = request.form['category']
+        name = request.form['name']
+        content = request.form['content']
+        if not (category and content and name):
+            flash("You didn't put in all of the values")
+            return redirect(url_for('view_note'))
+        category = Category.query.filter_by(name=category, user=current_user).first()
+        if category is None:
+            flash("No category with that name")
+            return redirect(url_for('view_note'))
+        new_note = Note(name, category, content, current_user)
+        db.session.add(new_note)
+        db.session.commit()
+        return redirect(url_for('view_note'))
 
 @app.route("/delete")
 @login_required
