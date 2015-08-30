@@ -1,4 +1,4 @@
-<div class="col-md-3 col-xs-12">
+<div class="col-md-12 col-xs-12">
 <h4>Note</h4>
 {% if note %}
 <form action="/note/{{ note.id }}" method="post" id="new_note">
@@ -16,9 +16,9 @@
 <div class="form-group">
     <label for="content-input">Content</label>
     {% if note %}
-    <textarea class="form-control" id="content-input" name="content" placeholder="Content" rows="3">{{note.content }}</textarea>
+    <textarea class="form-control" id="content-input" name="content" placeholder="Content" rows="30">{{note.content }}</textarea>
     {% else %}
-    <textarea class="form-control" id="content-input" name="content" placeholder="Content" rows="3"></textarea>
+    <textarea class="form-control" id="content-input" name="content" placeholder="Content" rows="30"></textarea>
     {% endif %}
 </div>
 <div class="form-group">
