@@ -275,8 +275,7 @@ def delete_note(note_id):
         return redirect(url_for('view_note'))
     db.session.delete(note)
     db.session.commit()
-    return redirect(url_for('view_note'))
-
+    return redirect(url_for('view_notes'))
 
 @app.route("/notes", methods=["POST", "GET"])
 def view_notes():
