@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+{% if current_user.is_authenticated() %}
+  Hi {{ current_user.name }}!
+{% endif %}
 <form method="post" action="/login">
   <div class="form-group">
     <label for="username-input">Username</label>

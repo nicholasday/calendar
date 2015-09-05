@@ -1,0 +1,19 @@
+{% for category in categories %}
+  <div class="col-xs-12 col-md-3">
+  <h3><a href="/category/{{ category.id }}" style="color:{{category.color}}">{{category.name}}</a></h3>
+  <ul>
+  {% for note in category.notes %}
+  <li><a href="/note/{{ note.id}}"><span style="color:{{note.category.color }}">&nbsp;{{ note.name }}&nbsp;</a> {{ note.date.strftime('%m/%d/%Y') }}
+    <a href="/note/{{ note.id }}/delete">delete</a>
+  </li>
+  {% endfor %}
+  </ul>
+  </div>
+{% if loop.index % 4 == 0 and not loop.last %}
+  </div>
+  <div class="row">
+{% endif %}
+  {% if loop.last %}
+  </div>
+  {% endif %}
+{% endfor %}

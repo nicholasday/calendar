@@ -23,9 +23,13 @@
 </div>
 <div class="form-group">
     <label for="category-input">Category</label>
-    <select name="category" form="new_task" class="form-control">
+    <select name="category" form="new_task" class="form-control" autocomplete="off">
     {% for category in categories %}
+    {% if task and category.name == task.category.name %}
+    <option value="{{ category.name }}" selected="selected">{{ category.name }}</option>
+    {% else %}
     <option value="{{ category.name }}">{{ category.name }}</option>
+    {% endif %}
     {% endfor %}
     </select>
 </div>

@@ -13,120 +13,36 @@ $("div.add_task").click(function(event){
     event.stopPropagation();
 });
 </script>
-<div class="mobile">
-      <div class="month"><h3>{{ date.strftime("%B") }} {{ date.year }}</h3></div>
-  {% for day in mobile_list %}
-  <div class="row">
-  {% if day[0][0] == date.day %}
-  <div class="col-xs-12 mobile_list add_task today" onclick="add_task(this.id)" id="{{ day[0][0] }}">
-  {% else %}
-  <div class="col-xs-12 mobile_list add_task" onclick="add_task(this.id)" id="{{ day[0][0] }}">
-  {% endif %}
-    <span style="color: {{ day[0][1] }} ">
-    {{ day[0][0] }}
-    {{ day[0][2] }}
-    </span>
-    <ol>
-    {% for task in day %}
-      {% if not loop.first %}
-        {% if task[2] == "due_date" %}
-        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">{{ task[3] }}</span></a></li>
-        {% elif task[2] == "task" %}
-        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
-            {% if task[3] == True %}
-            <s>
-            {{ task[4] }}
-            </s>
-            {% else %}
-            {{ task[4] }}
-            {% endif %}
-        </a></li>
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-    </ol>
-  </div>
-  </div>
-  {% endfor %}
-</div>
+{% if current_user.is_authenticated() == False %}
 <div class="row">
-  <div class="col-xs-12">
-    <table class="table table-bordered desktop">
-      <tr><th class="month" colspan="7"><h3>{{ date.strftime("%B") }} {{ date.year }}</h3></th></tr>
-      <tr><th class="Sunday">Sunday</th><th class="Monday">Monday</th><th class="Tuesday">Tuesday</th><th class="Wednesday">Wednesday</th><th class="Thursday">Thursday</th><th class="Friday">Friday</th><th class="Saturday">Saturday</th></tr>
-    {% for week in calendar %}
-    <tr>
-    {% for day in week %}
-    {% if day[0] == date.day %}
-      <td class="today add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
-    {% elif day[0] != 0 %}
-      <td class="add_task" onclick="add_task(this.id)" id="{{ day[0] }}">
-    {% else %}
-      <td>
-    {% endif %}
-    {% if day[0] != 0 %}
-        {{ day[0] }}
-    {% endif %}
-    <ol>
-    {% for task in day %}
-    {% if not loop.first %}
-        {% if task[2] == "due_date" %}
-        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">{{ task[3] }}</span></a></li>
-        {% elif task[2] == "task" %}
-        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
-            {% if task[3] == True %}
-            <s>
-            {{ task[4] }}
-            </s>
-            {% else %}
-            {{ task[4] }}
-            {% endif %}
-        </a></li>
-        {% endif %}
-    {% endif %}
-    {% endfor %}
-    </ol>
-    </td>
-    {% endfor %}
-    </tr>
-    {% endfor %}
-    </table>
+  <div class="col-xs-12 col-md-6">
+    <p>
+    I made this calendar so that people can organize themselves easily
+    this sophmore year. This is the calendar that I've created under
+    my account (and will be updated as the year goes on), so that you
+    can see what this app can do.
+    </p>
+    <p>You can</p>
+    <ul>
+        <li>use it on mobile</li>
+        <li>strikethrough tasks that are done</li>
+        <li>add due dates</li>
+        <li>add assignments</li>
+        <li>add categories</li>
+        <li>customize the different colors</li>
+    </ul>
+    <p>
+    Create an account to check it out and add your own assignments.
+    Tell me if you have any suggestions/comments.
+    </p>
+    <p>
+    -Nick
+    </p>
+    <br />
   </div>
 </div>
-<div class="row">
-{% for category in categories %}
-  <div class="col-xs-12 col-md-3">
-  <h3><a href="/category/{{ category.id }}" style="color:{{category.color}}">{{category.name}}</a></h3>
-  <ul>
-  {% for due_date in category.due_dates %}
-  <li><a href="/due_date/{{ due_date.id
-  }}"><span style="background-color:{{ due_date.category.color }}; color: white;">{{ due_date.name }}</a> {{due_date.date.strftime('%m/%d/%Y') }}
-    <a href="/task/{{ due_date.id }}/delete">delete</a>
-  <br />{{ due_date.description }}
-  </li>
-  {% endfor %}
-  {% for task in category.tasks %}
-  <li><a style="color: {{task.category.color }}" href="/task/{{task.id }}">
-      {% if task.completed == True %}
-      <s>
-      {{ task.name }}
-      </s>
-      {% else %}
-      {{ task.name }}
-      {% endif %}
-    </a> {{task.date.strftime('%m/%d/%Y') }}
-    <a href="/task/{{ task.id }}/delete">delete</a>
-  <br />{{ task.description }}
-  </li>
-  {% endfor %}
-  </ul>
-  </div>
-{% if loop.index % 4 == 0 and not loop.last %}
-  </div>
-  <div class="row">
 {% endif %}
-  {% if loop.last %}
-  </div>
-  {% endif %}
-{% endfor %}
+{% include "mobile_calendar.html" %}
+{% include "desktop_calendar.html" %}
+{% include "task_list.html" %}
 {% endblock %}

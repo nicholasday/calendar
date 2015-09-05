@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-xs-12">
+    <table class="table table-bordered desktop">
+      <tr><th>
+          {% if month_number == 1 %}
+          <a href="/date/12">Previous month</a>
+          {% else %}
+          <a href="/date/{{ month_number - 1 }}">Previous month</a>
+          {% endif %}
+        </th><th class="month" colspan="5"><h3>{{ month }} {{ year}}</h3></th><th><a href="/date/{{ month_number + 1 }}">Next month</a></th></tr>
+      <tr><th class="Sunday">Sunday</th><th class="Monday">Monday</th><th class="Tuesday">Tuesday</th><th class="Wednesday">Wednesday</th><th class="Thursday">Thursday</th><th class="Friday">Friday</th><th class="Saturday">Saturday</th></tr>
+    {% for week in calendar %}
+    <tr>
+    {% for day in week %}
+    {% if day[0] == date.day and date.month == month and date.year == year %}
+      <td class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
+    {% elif day[0] != 0 %}
+      <td class="add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
+    {% else %}
+      <td>
+    {% endif %}
+    {% if day[0] != 0 %}
+        {{ day[0] }}
+    {% endif %}
+    <ol>
+    {% for task in day %}
+    {% if not loop.first %}
+        {% if task[2] == "due_date" %}
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">&nbsp;{{ task[3] }}&nbsp;</span></a></li>
+        {% elif task[2] == "task" and current_user.is_authenticated() %}
+            {% if task[3] == True %}
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:grey !important; " href="/task/{{ task[1] }}">
+            <s>
+            {{ task[4] }}
+            </s>
+            {% else %}
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
+            {{ task[4] }}
+            {% endif %}
+        </a></li>
+        {% endif %}
+    {% endif %}
+    {% endfor %}
+    </ol>
+    </td>
+    {% endfor %}
+    </tr>
+    {% endfor %}
+    </table>
+  </div>
+</div>

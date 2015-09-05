@@ -87,6 +87,26 @@ class Task(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.name
 
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship("Category", backref=db.backref('notes', lazy="dynamic"))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship("User", backref=db.backref('notes', lazy="dynamic"))
+    date = db.Column(db.DateTime)
+    content = db.Column(db.Text)
+
+    def __init__(self, name, category, content, user):
+        self.name = name
+        self.category = category
+        self.user = user
+        self.content = content
+        self.date = datetime.datetime.now()
+
+    def __repr__(self):
+        return '<Note %r>' % self.name
+
 class Due_date(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
@@ -107,11 +127,28 @@ class Due_date(db.Model):
     def __repr__(self):
         return '<Due_date %r>' % self.name
 
+@app.route('/date/<int:month>')
+@app.route('/date/<int:month>/<int:week_number>')
+@app.route('/date/<int:month>/<int:week_number>/<int:year>')
+@app.route('/user/<user_id>')
 @app.route('/')
-@login_required
-def main():
-    categories = Category.query.filter_by(user=current_user).all()
-    list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(2015, 8)
+def main(user_id=None, month=None, week_number=None, year=None):
+    if user_id and current_user.username == 'nick':
+        logged_in_user = User.query.filter_by(id=user_id).first()
+    else:
+        if current_user.is_authenticated():
+            logged_in_user = current_user
+        else:
+            logged_in_user = User.query.filter_by(username='nick').first()
+    categories = Category.query.filter_by(user=logged_in_user).all()
+
+    if month == None:
+        month = datetime.datetime.now().month
+
+    if year == None:
+        year = datetime.datetime.now().year
+
+    list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(year, month)
     new_list_calendar = []
     for week in list_calendar:
         new_week = []
@@ -121,37 +158,42 @@ def main():
 
     for category in categories:
         for due_date in category.due_dates:
-            if due_date.date.month == datetime.datetime.now().month:
+            if due_date.date.month == month:
                 for week in new_list_calendar:
                     for day in week:
-                        if day[0] == due_date.date.day:
+                        if day[0] == due_date.date.day and month == due_date.date.month and year == due_date.date.year:
                            day.append([due_date.category.color, due_date.id, 'due_date', due_date.name]) 
     
     for category in categories:
         for task in category.tasks:
-            if task.date.month == datetime.datetime.now().month:
+            if task.date.month == month:
                 for week in new_list_calendar:
                     for day in week:
-                        if day[0] == task.date.day:
+                        if day[0] == task.date.day and month == task.date.month and year == task.date.year:
                            day.append([task.category.color, task.id, 'task', task.completed, task.name]) 
 
     date = datetime.datetime.now()
-    mobile_list = []
-    for week in new_list_calendar:
-        for day in week:
-            if day[0] >= (date.day - 1) and day[0] <= (date.day + 6):
-                if len(str(day[0])) == 1:
-                    that_day = '0' + str(day[0])
-                else:
-                    that_day = str(day[0])
-                date_of_day = datetime.datetime.strptime(date.strftime("%m")+'/'+that_day+'/'+str(date.year), "%m/%d/%Y").strftime("%A")
-                color = "#%06x" % random.randint(0, 0xFFFFFF)
-                day2 = [stuff for stuff in day]
-                day2[0] = [day[0], color, date_of_day]
-                mobile_list.append(day2)
+
+    if week_number is None:
+        week_number = 0
+        for index, week in enumerate(new_list_calendar, start=0):
+            for day in week:
+                if day[0] == date.day:
+                    week_number = index
+
+    days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
     date = datetime.datetime.now()
-    return render_template('index.html', date=date, categories=categories, calendar=new_list_calendar, current_user=current_user, mobile_list=mobile_list)
+    return render_template('index.html', days=days, week_number=week_number, month=calendar.month_name[month], month_number=month, year=year, date=date, categories=categories, calendar=new_list_calendar, logged_in_user=logged_in_user, current_user=current_user)
+
+@app.route('/users')
+@login_required
+def list_users():
+    if current_user.username == 'nick':
+        users = User.query.all()
+        return render_template("users.html", users=users)
+    else:
+        return redirect(url_for('main'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -180,7 +222,7 @@ def register():
             db.session.commit()
 
             login_user(user)
-            flash("Click on a calendar box to add a task/due date. Due dates are highlighted in the category color. Add categories to change the task text color and the due date highlighted color. Click on a task/due date/category to edit/delete it.")
+            flash("Click on a calendar box to add a task/due date. Due dates are highlighted in the category color. Add categories to change the task text color and the due date highlighted color. Click on a task/due date/category to edit/delete it. You can strikethrough on tasks by clicking on it and checking work completed. If you look at this website on mobile, it shows you the previous day and 6 days after, not the whole calendar.")
             return redirect(url_for('main'))
 
     return render_template('login.html', current_user=current_user)
@@ -220,6 +262,62 @@ def delete_task(task_id):
     db.session.delete(task)
     db.session.commit()
     return redirect(url_for('main'))
+
+@app.route("/note/<note_id>/delete")
+@login_required
+def delete_note(note_id):
+    if note_id is None:
+        flash("No note selected to be deleted")
+        return redirect(url_for('view_note'))
+    note = Note.query.filter_by(id=note_id, user=current_user).first()
+    if note is None:
+        flash("No note with that name")
+        return redirect(url_for('view_note'))
+    db.session.delete(note)
+    db.session.commit()
+    return redirect(url_for('view_notes'))
+
+@app.route("/notes", methods=["POST", "GET"])
+def view_notes():
+        categories = Category.query.filter_by(user=current_user).all()
+        return render_template("note.html", current_user=current_user, categories=categories)
+
+@app.route("/note/<note_id>", methods=['GET', 'POST'])
+@app.route("/note", methods=["POST", "GET"])
+@login_required
+def view_note(note_id=None):
+    if request.method == 'GET':
+        note = None
+        if note_id is not None:
+            note = Note.query.filter_by(id=note_id, user=current_user).first()
+        categories = Category.query.filter_by(user=current_user).all()
+        return render_template("add_note.html", note=note, current_user=current_user, categories=categories)
+    elif request.method == 'POST' and note_id is not None:
+        note = Note.query.filter_by(id=note_id, user=current_user).first()
+        if note is None:
+            flash("No note with that name")
+            return redirect(url_for('view_notes'))
+        category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
+        note.name = request.form['name']
+        note.category = category
+        note.content = request.form['content']
+        db.session.commit()
+        return redirect(url_for('view_notes'))
+    if request.method == 'POST' and note_id is None:
+        category = request.form['category']
+        name = request.form['name']
+        content = request.form['content']
+        if not (category and content and name):
+            flash("You didn't put in all of the values")
+            return redirect(url_for('view_note'))
+        category = Category.query.filter_by(name=category, user=current_user).first()
+        if category is None:
+            flash("No category with that name")
+            return redirect(url_for('view_note'))
+        new_note = Note(name, category, content, current_user)
+        db.session.add(new_note)
+        db.session.commit()
+        return redirect(url_for('view_notes'))
 
 @app.route("/delete")
 @login_required
@@ -275,15 +373,17 @@ def view_due_date(due_date_id=None):
         due_date.name = request.form['name']
         due_date.category = category
         due_date.description = request.form['description']
-        due_date.date = datetime.datetime.strptime(request.form['date'], "%m/%d/%Y")
+        date = request.form['date']
+        due_date.date = datetime.datetime.strptime(date, "%m/%d/%Y")
         db.session.commit()
-        return redirect(url_for('main'))
+        month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
+        return redirect(url_for('main', month=month))
     if request.method == 'POST' and due_date_id is None:
         category = request.form['category']
         date = request.form['date']
         name = request.form['name']
         description = request.form['description']
-        if not (category and date and name and description):
+        if not (category and date and name):
             flash("You didn't put in all of the values")
             return redirect(url_for('main'))
         category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
@@ -293,15 +393,19 @@ def view_due_date(due_date_id=None):
         new_due_date = Due_date(name, category, description, date, current_user)
         db.session.add(new_due_date)
         db.session.commit()
-        return redirect(url_for('main'))
+        month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
+        return redirect(url_for('main', month=month))
 
-@app.route("/both/date/<date>")
+@app.route("/both/date/<month>/<day>/<year>")
 @login_required
-def create_task_and_due_date_date(date):
-    if len(date) == 1:
-        date = datetime.datetime.now().strftime('%m') + '/0' + date + '/' + str(datetime.datetime.now().year)
+def create_task_and_due_date_date(month, day, year):
+    if not (month and day and year):
+        flash("Something happened. Not all the values were put in")
+        return redirect(url_for('main'))
+    if len(day) == 1:
+        date = month + '/0' + day + '/' + year
     else:
-        date = datetime.datetime.now().strftime('%m') + '/' + date + '/' + str(datetime.datetime.now().year)
+        date = month + '/' + day + '/' + year
     categories = Category.query.filter_by(user=current_user).all()
     completed = 0
     tasks_number = 0
@@ -348,15 +452,17 @@ def view_task(task_id=None):
             task.completed = True
         else:
             task.completed = False
-        task.date = datetime.datetime.strptime(request.form['date'], "%m/%d/%Y")
+        date = request.form['date']
+        task.date = datetime.datetime.strptime(date, "%m/%d/%Y")
         db.session.commit()
-        return redirect(url_for('main'))
+        month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
+        return redirect(url_for('main', month=month))
     if request.method == 'POST' and task_id is None:
         category = request.form['category']
         date = request.form['date']
         name = request.form['name']
         description = request.form['description']
-        if not (category and date and name and description):
+        if not (category and date and name):
             flash("You didn't put in all of the values")
             return redirect(url_for('main'))
         category = Category.query.filter_by(name=request.form['category'], user=current_user).first()
@@ -366,7 +472,8 @@ def view_task(task_id=None):
         new_task = Task(name, category, description, date, current_user)
         db.session.add(new_task)
         db.session.commit()
-        return redirect(url_for('main'))
+        month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
+        return redirect(url_for('main', month=month))
 
 @app.route("/category/<category_id>", methods=['GET', 'POST'])
 @app.route("/category", methods=["POST", "GET"])

@@ -2,6 +2,9 @@ td {
     width: 14%;
     max-width: 14%;
 }
+.center {
+    text-align: center;
+}
 .today {
     background-color: #E8FDE7;
 }
@@ -23,9 +26,6 @@ td {
         padding-bottom: 20px;
     }
     .mobile .row {
-        border-top: 1px solid #ccc;
-    }
-    .mobile .row:last-child {
         border-bottom: 1px solid #ccc;
     }
 }
