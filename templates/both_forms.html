@@ -11,6 +11,12 @@ $(function(){
 });
 </script>
 <div class="row">
+  <div class="col-xs-12">
+    <h3>Statistics</h3>
+    Completed {{ completed }}/{{ tasks_number }} Tasks
+  </div>
+</div>
+<div class="row">
 {% include "task_form.html" %}
 {% include "due_date_form.html" %}
 {% include "category_form.html" %}

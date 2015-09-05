@@ -303,7 +303,15 @@ def create_task_and_due_date_date(date):
     else:
         date = datetime.datetime.now().strftime('%m') + '/' + date + '/' + str(datetime.datetime.now().year)
     categories = Category.query.filter_by(user=current_user).all()
-    return render_template("both_forms.html", date=date, categories=categories, current_user=current_user, task=None, due_date=None)
+    completed = 0
+    tasks_number = 0
+    for category in categories:
+        for task in category.tasks:
+            if task.date.strftime('%m/%d/%Y') == datetime.datetime.now().strftime("%m/%d/%Y"):
+                tasks_number += 1
+                if task.completed == True:
+                    completed += 1
+    return render_template("both_forms.html", completed=completed, tasks_number=tasks_number, date=date, categories=categories, current_user=current_user, task=None, due_date=None)
 
 @app.route("/task/date/<date>")
 @login_required
