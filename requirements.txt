@@ -3,5 +3,4 @@ flask-sqlalchemy
 marshmallow-sqlalchemy
 flask-marshmallow
 flask-login
-flask-restful
 uwsgi
