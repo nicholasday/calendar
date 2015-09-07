@@ -1,36 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-{% if current_user.is_authenticated() %}
-  Hi {{ current_user.name }}!
-{% endif %}
 <form method="post" action="/login">
+  {{ login_form.csrf_token }}
   <div class="form-group">
-    <label for="username-input">Username</label>
-    <input type="text" class="form-control" id="username-input" name="username" placeholder="Username">
+    {{ login_form.username.label }}
+    {{ login_form.username(class='form-control') }}
+    {% if login_form.username.errors %}
+    <ul class="errors">
+      {% for error in login_form.username.errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    <ul>
+    {% endif %}
   </div>
   <div class="form-group">
-    <label for="password-input">Password</label>
-    <input type="password" class="form-control" id="password-input" name="password" placeholder="Password">
+    {{ login_form.password.label }}
+    {{ login_form.password(class='form-control') }}
+    {% if login_form.password.errors %}
+    <ul class="errors">
+      {% for error in login_form.password.errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    <ul>
+    {% endif %}
   </div>
   <div class="form-group">
     <button type="submit" class="btn btn-primary">Login</button>
-  </div>
-</form>
-<form method="post" action="/register">
-  <div class="form-group">
-    <label for="username-input">Username</label>
-    <input type="text" class="form-control" id="username-input" name="username" placeholder="Username">
-  </div>
-  <div class="form-group">
-    <label for="email-input">Email address</label>
-    <input type="email" class="form-control" id="email-input" placeholder="Email" name="email">
-  </div>
-  <div class="form-group">
-    <label for="password-input">Password</label>
-    <input type="password" class="form-control" id="password-input" name="password" placeholder="Password">
-  </div>
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">Register</button>
   </div>
 </form>
 {% endblock %}

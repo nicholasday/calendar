@@ -1,8 +1,20 @@
 from app.models import db, User, Category
 from app.frontend import frontend
-from flask import request, render_template, url_for, redirect, flash
+from flask import request, render_template, url_for, redirect, flash, abort
 from flask.ext.login import login_required, login_user, current_user, logout_user
 from hashlib import sha1
+from app.forms import RegisterForm, LoginForm
+
+def next_is_valid(next):
+    if next ==  '/users':
+        if current_user == 'nick':
+            return True
+        else:
+            return False
+    elif next is None:
+        return True
+    else:
+        return True
 
 @frontend.route("/delete")
 @login_required
@@ -24,20 +36,17 @@ def list_users():
 
 @frontend.route('/register', methods=['GET', 'POST'])
 def register():
-    if (request.method == 'POST'
-            and request.form['username']
-            and request.form['password']
-            and request.form['email']):
-
-        user = db.session.query(User).filter_by(username=request.form['username']).first()
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = db.session.query(User).filter_by(username=form.username.data).first()
         if user is not None:
             flash('That username is already taken')
             return redirect(url_for('frontend.main'))
         else:
             user = User(
-                username=request.form['username'],
-                password=request.form['password'],
-                email=request.form['email'],
+                username=form.username.data,
+                password=form.password.data,
+                email=form.email.data,
             )
             default_category = Category(
                 name='default',
@@ -52,7 +61,7 @@ def register():
             flash("Click on a calendar box to add a task/due date. Due dates are highlighted in the category color. Add categories to change the task text color and the due date highlighted color. Click on a task/due date/category to edit/delete it. You can strikethrough on tasks by clicking on it and checking work completed. If you look at this website on mobile, it shows you the previous day and 6 days after, not the whole calendar.")
             return redirect(url_for('frontend.main'))
 
-    return render_template('login.html', current_user=current_user)
+    return render_template('register.html', current_user=current_user, register_form=form)
 
 @frontend.route("/logout")
 @login_required
@@ -62,16 +71,14 @@ def logout():
 
 @frontend.route('/login', methods=['GET', 'POST'])
 def login():
-    if (request.method == 'POST'
-            and request.form['username']
-            and request.form['password']):
-
+    form = LoginForm()
+    if form.validate_on_submit():
         user = db.session.query(User).filter_by(
-            username=request.form['username'],
-            password=sha1(request.form['password'].encode('utf-8')).hexdigest()).first()
+            username=form.username.data,
+            password=sha1(form.password.data.encode('utf-8')).hexdigest()).first()
         if user is None:
             flash("Woah there! You didn't type something in right")
             return redirect(url_for('frontend.main'))
         login_user(user)
         return redirect(url_for('frontend.main'))
-    return render_template('login.html', current_user=current_user)
+    return render_template('login.html', current_user=current_user, login_form=form)
