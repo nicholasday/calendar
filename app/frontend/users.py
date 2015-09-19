@@ -38,28 +38,23 @@ def list_users():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        user = db.session.query(User).filter_by(username=form.username.data).first()
-        if user is not None:
-            flash('That username is already taken')
-            return redirect(url_for('frontend.main'))
-        else:
-            user = User(
-                username=form.username.data,
-                password=form.password.data,
-                email=form.email.data,
-            )
-            default_category = Category(
-                name='default',
-                color='#000000',
-                user=user
-            )
-            db.session.add(user)
-            db.session.add(default_category)
-            db.session.commit()
+        user = User(
+            username=form.username.data,
+            password=form.password.data,
+            email=form.email.data,
+        )
+        default_category = Category(
+            name='default',
+            color='#000000',
+            user=user
+        )
+        db.session.add(user)
+        db.session.add(default_category)
+        db.session.commit()
 
-            login_user(user)
-            flash("Click on a calendar box to add a task/due date. Due dates are highlighted in the category color. Add categories to change the task text color and the due date highlighted color. Click on a task/due date/category to edit/delete it. You can strikethrough on tasks by clicking on it and checking work completed. If you look at this website on mobile, it shows you the previous day and 6 days after, not the whole calendar.")
-            return redirect(url_for('frontend.main'))
+        login_user(user)
+        flash("Click on a calendar box to add a task/due date. Due dates are highlighted in the category color. Add categories to change the task text color and the due date highlighted color. Click on a task/due date/category to edit/delete it. You can strikethrough on tasks by clicking on it and checking work completed. If you look at this website on mobile, it shows you the previous day and 6 days after, not the whole calendar.")
+        return redirect(url_for('frontend.main'))
 
     return render_template('register.html', current_user=current_user, register_form=form)
 
@@ -73,12 +68,6 @@ def logout():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = db.session.query(User).filter_by(
-            username=form.username.data,
-            password=sha1(form.password.data.encode('utf-8')).hexdigest()).first()
-        if user is None:
-            flash("Woah there! You didn't type something in right")
-            return redirect(url_for('frontend.main'))
-        login_user(user)
+        login_user(form.user)
         return redirect(url_for('frontend.main'))
     return render_template('login.html', current_user=current_user, login_form=form)
