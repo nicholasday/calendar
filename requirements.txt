@@ -5,3 +5,4 @@ flask-marshmallow
 flask-login
 uwsgi
 flask-wtf
+flask-admin
