@@ -83,7 +83,13 @@ def add_task():
     if category is None:
         flash("No category with that name")
         return redirect(url_for('frontend.main'))
-    new_task = Task(name, category, description, date, current_user)
+    max_position = db.session.query(db.func.max(Task.position)).scalar()
+    if max_position == None:
+        max_position = 1
+    else:
+        max_position += 1
+    #tasks = db.session.query(Task).filter(Task.position == (max_position + 1)).all()
+    new_task = Task(name, category, description, date, current_user, max_position)
     db.session.add(new_task)
     db.session.commit()
     month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")

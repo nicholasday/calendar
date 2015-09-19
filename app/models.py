@@ -63,6 +63,7 @@ class Category(db.Model):
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    position = db.Column(db.Integer)
     name = db.Column(db.String(80))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship("Category", backref=db.backref('tasks', lazy="dynamic"))
@@ -72,13 +73,14 @@ class Task(db.Model):
     completed = db.Column(db.Boolean)
     description = db.Column(db.Text)
 
-    def __init__(self, name, category, description, date, user):
+    def __init__(self, name, category, description, date, user, position):
         self.name = name
         self.category = category
         self.user = user
         self.description = description
         self.date = datetime.datetime.strptime(date, "%m/%d/%Y")
         self.completed = False
+        self.position = position
 
     def __repr__(self):
         return '<Task %r>' % self.name

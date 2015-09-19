@@ -14,6 +14,9 @@ td {
 .month {
     text-align: center;
 }
+.sortable {
+    min-height: 50px;
+}
 @media (max-width: 767px) {
     .desktop {
         display: none;
