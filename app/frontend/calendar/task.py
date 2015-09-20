@@ -94,3 +94,15 @@ def add_task():
     db.session.commit()
     month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
     return redirect(url_for('frontend.main', month=month))
+
+@frontend.route("/task_position", methods=["POST"])
+@login_required
+def position_task():
+    date = request.form['date']
+    positions = request.form.getlist("task")
+    for position, id in enumerate(positions):
+        task = Task.query.get(id)
+        task.position = position
+    db.session.commit()
+    return
+

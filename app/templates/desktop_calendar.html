@@ -5,7 +5,7 @@ $(".sortable").sortable({
     update : function (event, ui) { 
         var data = $(this).sortable('serialize').toString();
         var date = $(this).closest('td').attr('id');
-        $(".info").html(data + date); 
+        $(".info").html(data + "&date=" + date); 
     } 
 }).disableSelection();
 });
@@ -43,15 +43,15 @@ $(".sortable").sortable({
     {% for task in day %}
     {% if not loop.first %}
         {% if task[2] == "due_date" %}
-        <li style="color:{{ task[0] }}" id="item_{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">&nbsp;{{ task[3] }}&nbsp;</span></a></li>
+        <li style="color:{{ task[0] }}" id="{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">&nbsp;{{ task[3] }}&nbsp;</span></a></li>
         {% elif task[2] == "task" and current_user.is_authenticated() %}
             {% if task[3] == True %}
-        <li style="color:{{ task[0] }}" id="item_{{task[1]}}"><a style="color:grey !important; " href="/task/{{ task[1] }}">
+        <li style="color:{{ task[0] }}" id="task_{{task[1]}}"><a style="color:grey !important; " href="/task/{{ task[1] }}">
             <s>
             {{ task[4] }}
             </s>
             {% else %}
-        <li style="color:{{ task[0] }}" id="item_{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
+        <li style="color:{{ task[0] }}" id="task_{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
             {{ task[4] }}
             {% endif %}
         </a></li>
