@@ -5,8 +5,12 @@ $(".sortable").sortable({
     update : function (event, ui) { 
         var data = $(this).sortable('serialize').toString();
         var date = $(this).closest('td').attr('id');
+        if (date === undefined) {
+           date = $(this).closest('div').attr('id');
+        }
         var ajax_data = data + "&date=" + date;
         ajax_data = ajax_data.replace(/\//g , "%2F").replace(/\[/g, "").replace(/\]/g, "");
+        $('.info').html(ajax_data);
         $.ajax({
             url : "/task_position",
             type: "POST",
@@ -17,7 +21,7 @@ $(".sortable").sortable({
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
-            $(".info").html(errorThrown); 
+            //$(".info").html(errorThrown); 
 
             }
         });
