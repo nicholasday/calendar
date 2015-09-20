@@ -26,6 +26,13 @@ def main(user_id=None, month=None, week_number=None, year=None):
         else:
             logged_in_user = User.query.filter_by(username='nick').first()
     categories = Category.query.filter_by(user=logged_in_user).all()
+    due_dates = Due_date.query.filter_by(user=logged_in_user).all()
+    tasks = Task.query.filter_by(user=logged_in_user).order_by(Task.position).all()
+    #categories = (db.session.query(Category).
+    #    filter_by(user=logged_in_user).
+    #    join(Task, Category.tasks).
+    #    order_by(Task.position)
+    #    )
 
     if month == None:
         month = datetime.datetime.now().month
@@ -41,21 +48,19 @@ def main(user_id=None, month=None, week_number=None, year=None):
             new_week.append([day])
         new_list_calendar.append(new_week)
 
-    for category in categories:
-        for due_date in category.due_dates:
-            if due_date.date.month == month:
-                for week in new_list_calendar:
-                    for day in week:
-                        if day[0] == due_date.date.day and month == due_date.date.month and year == due_date.date.year:
-                           day.append([due_date.category.color, due_date.id, 'due_date', due_date.name]) 
+    for due_date in due_dates:
+        if due_date.date.month == month:
+            for week in new_list_calendar:
+                for day in week:
+                    if day[0] == due_date.date.day and month == due_date.date.month and year == due_date.date.year:
+                        day.append([due_date.category.color, due_date.id, 'due_date', due_date.name]) 
     
-    for category in categories:
-        for task in category.tasks:
-            if task.date.month == month:
-                for week in new_list_calendar:
-                    for day in week:
-                        if day[0] == task.date.day and month == task.date.month and year == task.date.year:
-                           day.append([task.category.color, task.id, 'task', task.completed, task.name]) 
+    for task in tasks:
+        if task.date.month == month:
+            for week in new_list_calendar:
+                for day in week:
+                    if day[0] == task.date.day and month == task.date.month and year == task.date.year:
+                        day.append([task.category.color, task.id, 'task', task.completed, task.name]) 
 
     date = datetime.datetime.now()
 

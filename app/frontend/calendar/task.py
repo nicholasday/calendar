@@ -1,7 +1,7 @@
 from app.frontend import frontend
 from flask.ext.login import login_required, current_user
 from flask import url_for, redirect, render_template, flash, request
-from app.models import Category, Task, db
+from app.models import Category, Task, db, Due_date
 import datetime
 
 @frontend.route("/task/<task_id>/delete")
@@ -83,13 +83,14 @@ def add_task():
     if category is None:
         flash("No category with that name")
         return redirect(url_for('frontend.main'))
-    max_position = db.session.query(db.func.max(Task.position)).scalar()
-    if max_position == None:
-        max_position = 1
+    date2 = datetime.datetime.strptime(date, "%m/%d/%Y")
+    tasks = db.session.query(db.func.max(Task.position)).filter_by(date=date2).scalar()
+    position = 0
+    if tasks == None:
+        position = 1
     else:
-        max_position += 1
-    #tasks = db.session.query(Task).filter(Task.position == (max_position + 1)).all()
-    new_task = Task(name, category, description, date, current_user, max_position)
+        position = tasks + 1
+    new_task = Task(name, category, description, date, current_user, position)
     db.session.add(new_task)
     db.session.commit()
     month = datetime.datetime.strptime(date, "%m/%d/%Y").strftime("%m")
@@ -99,10 +100,18 @@ def add_task():
 @login_required
 def position_task():
     date = request.form['date']
-    positions = request.form.getlist("task")
+    positions = request.values.getlist("task")
+    duedates = request.values.getlist("duedate")
+    all_positions = ""
+    if duedates is not None:
+        for duedate, id in enumerate(duedates):
+            due_date = Due_date.query.get(id)
+            due_date.date = datetime.datetime.strptime(date, "%m/%d/%Y")
     for position, id in enumerate(positions):
         task = Task.query.get(id)
-        task.position = position
+        task.position = position + 1
+        task.date = datetime.datetime.strptime(date, "%m/%d/%Y")
+        all_positions = all_positions + str(id)
     db.session.commit()
-    return
+    return all_positions
 

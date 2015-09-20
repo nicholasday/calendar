@@ -68,7 +68,7 @@ class Task(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship("Category", backref=db.backref('tasks', lazy="dynamic"))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship("User", backref=db.backref('tasks', lazy="dynamic"))
+    user = db.relationship("User", order_by="Task.position", backref=db.backref('tasks', lazy="dynamic"))
     date = db.Column(db.DateTime)
     completed = db.Column(db.Boolean)
     description = db.Column(db.Text)
