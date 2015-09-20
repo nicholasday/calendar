@@ -10,7 +10,6 @@ $(".sortable").sortable({
         }
         var ajax_data = data + "&date=" + date;
         ajax_data = ajax_data.replace(/\//g , "%2F").replace(/\[/g, "").replace(/\]/g, "");
-        $('.info').html(ajax_data);
         $.ajax({
             url : "/task_position",
             type: "POST",

@@ -26,7 +26,7 @@
   {% endif %}
     {{ day[0] }}
     {{ days[loop.index0] }}
-    <ol class="sortable">
+    <ol>
     {% for task in day %}
       {% if not loop.first %}
         {% if task[2] == "due_date" %}
