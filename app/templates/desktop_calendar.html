@@ -59,8 +59,7 @@ $.contextMenu({
         }}
     }
 });
-var divPosition = $('.today').offset();
-$('html, body').animate({scrollTop: divPosition.top}, "slow");
+window.location.hash = "#today"
 });
 </script>
 <div class="row">
@@ -80,7 +79,7 @@ $('html, body').animate({scrollTop: divPosition.top}, "slow");
     <tr>
     {% for day in week %}
     {% if day[0] == date.day and date.month == month_number and year == date.year %}
-      <td class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
+      <td id="today" class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
     {% elif day[0] != 0 %}
       <td class="add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
     {% else %}
