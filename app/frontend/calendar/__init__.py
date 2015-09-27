@@ -28,17 +28,14 @@ def main(user_id=None, month=None, week_number=None, year=None):
     categories = Category.query.filter_by(user=logged_in_user).all()
     due_dates = Due_date.query.filter_by(user=logged_in_user).all()
     tasks = Task.query.filter_by(user=logged_in_user).order_by(Task.position).all()
-    #categories = (db.session.query(Category).
-    #    filter_by(user=logged_in_user).
-    #    join(Task, Category.tasks).
-    #    order_by(Task.position)
-    #    )
+
+    date = datetime.datetime.now()
 
     if month == None:
-        month = datetime.datetime.now().month
+        month = date.month
 
     if year == None:
-        year = datetime.datetime.now().year
+        year = date.year
 
     list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(year, month)
     new_list_calendar = []
@@ -62,8 +59,6 @@ def main(user_id=None, month=None, week_number=None, year=None):
                     if day[0] == task.date.day and month == task.date.month and year == task.date.year:
                         day.append([task.category.color, task.id, 'task', task.completed, task.name]) 
 
-    date = datetime.datetime.now()
-
     if week_number is None:
         week_number = 0
         for index, week in enumerate(new_list_calendar, start=0):
@@ -73,8 +68,9 @@ def main(user_id=None, month=None, week_number=None, year=None):
 
     days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-    date = datetime.datetime.now()
-    return render_template('index.html', days=days, week_number=week_number, month=calendar.month_name[month], month_number=month, year=year, date=date, categories=categories, calendar=new_list_calendar, logged_in_user=logged_in_user, current_user=current_user)
+    month_number_str = str(month)
+
+    return render_template('index.html', month_number_str=month_number_str, days=days, week_number=week_number, month=calendar.month_name[month], month_number=month, year=year, date=date, categories=categories, calendar=new_list_calendar, logged_in_user=logged_in_user, current_user=current_user)
 
 @frontend.route("/both/date/<month>/<day>/<year>")
 @login_required
