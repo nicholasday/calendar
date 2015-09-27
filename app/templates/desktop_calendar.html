@@ -79,7 +79,7 @@ window.location.hash = "#today";
     <tr>
     {% for day in week %}
     {% if day[0] == date.day and date.month == month_number and year == date.year %}
-      <div id="today"></div><td id="today" class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
+      <td id="today" class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}"><div id="today"></div>
     {% elif day[0] != 0 %}
       <td class="add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
     {% else %}
