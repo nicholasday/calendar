@@ -59,8 +59,8 @@ $.contextMenu({
         }}
     }
 });
-var scrollTo = $('#today');
-var scrollTo2 = $('#today2');
+var scrollTo = $('.today');
+var scrollTo2 = $('.today2');
 if ($('.desktop').is(":visible")) { 
 $('html,body').animate({scrollTop: scrollTo2.offset().top});
 } else {
@@ -85,7 +85,7 @@ $('html,body').animate({scrollTop: scrollTo.offset().top});
     <tr>
     {% for day in week %}
     {% if day[0] == date.day and date.month == month_number and year == date.year %}
-      <td id="today2" class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
+      <td class="today add_task today2" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
     {% elif day[0] != 0 %}
       <td class="add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
     {% else %}
