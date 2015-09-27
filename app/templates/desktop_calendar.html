@@ -59,7 +59,13 @@ $.contextMenu({
         }}
     }
 });
-window.location.hash = "#today";
+//window.location.hash = "#today";
+var w = $(window);
+var today = $('#today');
+
+if (today.length){
+    w.scrollTop( today.offset().top - (w.height()/2) );
+}
 });
 </script>
 <div class="row">
@@ -79,10 +85,10 @@ window.location.hash = "#today";
     <tr>
     {% for day in week %}
     {% if day[0] == date.day and date.month == month_number and year == date.year %}
-      <td id="today" class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}"><div id="today">
+      <td id="today" class="today add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
     {% elif day[0] != 0 %}
-      <td class="add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}"><div>
-    {% else %}</div>
+      <td class="add_task" onclick="add_task(this.id)" id="{{month_number}}/{{day[0]}}/{{year}}">
+    {% else %}
       <td>
     {% endif %}
     {% if day[0] != 0 %}
