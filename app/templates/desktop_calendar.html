@@ -59,6 +59,8 @@ $.contextMenu({
         }}
     }
 });
+var divPosition = $('.today').offset();
+$('html, body').animate({scrollTop: divPosition.top}, "slow");
 });
 </script>
 <div class="row">
