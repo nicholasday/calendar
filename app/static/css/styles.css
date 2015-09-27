@@ -17,6 +17,15 @@ td {
 .sortable {
     min-height: 50px;
 }
+.context-menu-item.icon-edit {
+    background-image: url(/static/img/page_white_edit.png);
+}
+.context-menu-item.icon-delete {
+    background-image: url(/static/img/page_white_delete.png);
+}
+.context-menu-item.icon-completed {
+    background-image: url(/static/img/check.gif);
+}
 @media (max-width: 767px) {
     .desktop {
         display: none;

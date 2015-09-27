@@ -41,6 +41,21 @@ def view_task(task_id):
         date = datetime.datetime.now().strftime('%m/%d/%Y')
     return render_template("task.html", task=task, categories=categories, current_user=current_user, date=date)
 
+@frontend.route("/task/<task_id>/completed", methods=['GET'])
+@login_required
+def complete_task(task_id):
+    task = Task.query.filter_by(id=task_id, user=current_user).first()
+    categories = Category.query.filter_by(user=current_user).all()
+    if task is not None:
+        date = task.date.strftime('%m/%d/%Y')
+    else:
+        flash("That task couldn't be found")
+        return redirect(url_for('frontend.main'))
+        date = datetime.datetime.now().strftime('%m/%d/%Y')
+    task.completed = not task.completed
+    db.session.commit()
+    return render_template("task.html", task=task, categories=categories, current_user=current_user, date=date)
+
 @frontend.route("/task/<task_id>", methods=['POST'])
 @login_required
 def update_task(task_id):
