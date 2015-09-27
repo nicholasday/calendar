@@ -4,6 +4,8 @@
   <h3><a href="/category/{{ category.id }}" style="color:{{category.color}}">{{category.name}}</a></h3>
   <ul>
   {% for due_date in category.due_dates %}
+  {{ month_number_str }}
+  {{ due_date.date.strftime('%-m') }}
   {% if due_date.date.strftime('%-m') == month_number_str %}
   <li><a href="/due_date/{{ due_date.id
   }}"><span style="background-color:{{ due_date.category.color }}; color: white;">&nbsp;{{ due_date.name }}&nbsp;</a> {{due_date.date.strftime('%m/%d/%Y') }}
@@ -14,6 +16,7 @@
   {% endfor %}
   {% if current_user.is_authenticated() %}
   {% for task in category.tasks %}
+  {{ task.date.strftime('%-m') }}
   {% if task.date.strftime('%-m') == month_number_str %}
   <li><a style="color: {{task.category.color }}" href="/task/{{task.id }}">
       {% if task.completed == True %}
