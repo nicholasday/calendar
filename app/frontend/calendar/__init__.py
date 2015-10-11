@@ -21,7 +21,7 @@ def main(user_id=None, month=None, week_number=None, year=None):
     if user_id and current_user.username == 'nick':
         logged_in_user = User.query.filter_by(id=user_id).first()
     else:
-        if current_user.is_authenticated():
+        if current_user.is_authenticated:
             logged_in_user = current_user
         else:
             logged_in_user = User.query.filter_by(username='nick').first()

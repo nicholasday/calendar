@@ -101,7 +101,7 @@ $('html,body').animate({scrollTop: scrollTo.offset().top});
     {% if not loop.first %}
         {% if task[2] == "due_date" %}
         <li class="contextmenu" style="color:{{ task[0] }}" id="duedate_{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">&nbsp;{{ task[3] }}&nbsp;</span></a></li>
-        {% elif task[2] == "task" and current_user.is_authenticated() %}
+        {% elif task[2] == "task" and current_user.is_authenticated %}
             {% if task[3] != True %}
         <li class="contextmenu" style="color:{{ task[0] }}" id="task_{{task[1]}}"><a style="color:{{ task[0] }} !important; " href="/task/{{ task[1] }}">
             {{ task[4] }}

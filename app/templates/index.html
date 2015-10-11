@@ -13,7 +13,7 @@ $("div.add_task").click(function(event){
     event.stopPropagation();
 });
 </script>
-{% if current_user.is_authenticated() == False %}
+{% if current_user.is_authenticated == False %}
 <div class="row">
   <div class="col-xs-12 col-md-6">
     <p>

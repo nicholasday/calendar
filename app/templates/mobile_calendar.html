@@ -31,7 +31,7 @@
       {% if not loop.first %}
         {% if task[2] == "due_date" %}
         <li id="duedate_{{task[1]}}"><a href="/due_date/{{ task[1]}}"><span style="background-color:{{task[0] }}; color: white">&nbsp;{{ task[3] }}&nbsp;</span></a></li>
-        {% elif task[2] == "task" %}
+        {% elif task[2] == "task" and current_user.is_authenticated %}
             {% if task[3] == True %}
         <li id="task_{{task[1]}}"><a style="color:grey !important;" href="/task/{{ task[1] }}">
             <s>
