@@ -37,6 +37,10 @@ def main(user_id=None, month=None, week_number=None, year=None):
     if year == None:
         year = date.year
 
+    if month == 13:
+        year = year + 1
+        month = 1
+
     list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(year, month)
     new_list_calendar = []
     for week in list_calendar:
