@@ -4,6 +4,8 @@ from app.models import User, Category, Task, Due_date, db
 from flask import render_template, redirect, url_for, flash, request
 import datetime
 import calendar
+from sqlalchemy import extract
+from itertools import zip_longest
 
 import app.frontend.calendar.due_date
 import app.frontend.calendar.task
@@ -25,9 +27,6 @@ def main(user_id=None, month=None, week_number=None, year=None):
             logged_in_user = current_user
         else:
             logged_in_user = User.query.filter_by(username='nick').first()
-    categories = Category.query.filter_by(user=logged_in_user).all()
-    due_dates = Due_date.query.filter_by(user=logged_in_user).all()
-    tasks = Task.query.filter_by(user=logged_in_user).order_by(Task.position).all()
 
     date = datetime.datetime.now()
 
@@ -41,28 +40,33 @@ def main(user_id=None, month=None, week_number=None, year=None):
         year = year + 1
         month = 1
 
-    list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(year, month)
-    new_list_calendar = []
-    for week in list_calendar:
-        new_week = []
-        for day in week:
-            new_week.append([day])
-        new_list_calendar.append(new_week)
+    categories = Category.query.filter_by(user=logged_in_user).all()
+    due_dates = Due_date.query.filter(Due_date.user==logged_in_user,
+            extract('month', Due_date.date) == month, extract('year',
+                Due_date.date) == year).all()
+    tasks = Task.query.filter(Task.user==logged_in_user, extract('month',
+        Task.date) == month, extract('year', Task.date) == year).order_by(Task.position).all()
 
-    for due_date in due_dates:
-        if due_date.date.month == month:
-            for week in new_list_calendar:
-                for day in week:
+    list_calendar = calendar.Calendar(calendar.SUNDAY).monthdayscalendar(year, month)
+
+    def list_maker(x):
+        l = []
+        l.append(x)
+        return l
+
+    f = lambda x: list(map(list_maker, x))
+    new_list_calendar = list(map(f, list_calendar))
+
+    for due_date, task in zip_longest(due_dates, tasks):
+        for week in new_list_calendar:
+            for day in week:
+                if due_date is not None:
                     if day[0] == due_date.date.day and month == due_date.date.month and year == due_date.date.year:
                         day.append([due_date.category.color, due_date.id, 'due_date', due_date.name]) 
-    
-    for task in tasks:
-        if task.date.month == month:
-            for week in new_list_calendar:
-                for day in week:
+                if task is not None:
                     if day[0] == task.date.day and month == task.date.month and year == task.date.year:
                         day.append([task.category.color, task.id, 'task', task.completed, task.name]) 
-
+    
     if week_number is None:
         week_number = 0
         for index, week in enumerate(new_list_calendar, start=0):
