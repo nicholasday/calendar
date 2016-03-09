@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, request, flash, jsonify
+from flask.ext.cors import CORS
 from flask.ext.login import LoginManager, login_required, login_user, current_user, logout_user
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -15,6 +16,7 @@ login_manager.login_view = 'frontend.login'
 
 #def create_app():
 app = Flask(__name__)
+CORS(app)
 #api = Api(app)
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../test.db'
