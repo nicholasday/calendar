@@ -5,7 +5,6 @@ from flask import render_template, redirect, url_for, flash, request
 import datetime
 import calendar
 from sqlalchemy import extract
-from itertools import zip_longest
 
 import app.frontend.calendar.due_date
 import app.frontend.calendar.task
@@ -57,12 +56,16 @@ def main(user_id=None, month=None, week_number=None, year=None):
     f = lambda x: list(map(list_maker, x))
     new_list_calendar = list(map(f, list_calendar))
 
-    for due_date, task in zip_longest(due_dates, tasks):
+    for due_date in due_dates:
         for week in new_list_calendar:
             for day in week:
                 if due_date is not None:
                     if day[0] == due_date.date.day and month == due_date.date.month and year == due_date.date.year:
                         day.append([due_date.category.color, due_date.id, 'due_date', due_date.name]) 
+
+    for task in tasks:
+        for week in new_list_calendar:
+            for day in week:
                 if task is not None:
                     if day[0] == task.date.day and month == task.date.month and year == task.date.year:
                         day.append([task.category.color, task.id, 'task', task.completed, task.name]) 
